@@ -1,2 +1,3 @@
 rootProject.name = "ToolKit"
 include ':app'
+include ':Library'
