@@ -1,3 +1,5 @@
 rootProject.name = "ToolKit"
 include ':app'
-include ':Library'
+include ':utils'
+include ':network'
+include ':widget'
