@@ -37,7 +37,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    api "com.guo.android_extend:android-extend:1.0.5"//bitmap 转nv21
 
     api rootProject.ext.dependencies.gson
     api rootProject.ext.dependencies.okhttp

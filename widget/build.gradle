@@ -1,11 +1,7 @@
 plugins {
     id 'com.android.library'
-//    id 'com.github.dcendents.android-maven'
     id 'maven-publish'
 }
-//apply plugin: 'com.github.dcendents.android-maven'
-
-//group='com.github.zgodev'
 
 afterEvaluate {
     publishing {
@@ -18,16 +14,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.zgodev'
                 artifactId = 'widget'
-                version = '1.0.0'
-            }
-            // Creates a Maven publication called “debug”.
-            debug(MavenPublication) {
-                // Applies the component for the debug build variant.
-                from components.debug
-
-                groupId = 'com.github.zgodev'
-                artifactId = 'widget-debug'
-                version = '1.0.0'
+                version = '1.0.1'
             }
         }
     }
