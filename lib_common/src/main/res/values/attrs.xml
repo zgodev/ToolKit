@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 业务自定义的主题属性（通过 theme 切换会影响全局） -->
+    <attr name="common_color_primary" format="color" />
+    <attr name="common_color_primary_dark" format="color" />
+    <attr name="common_color_accent" format="color" />
+    <attr name="common_color_bg" format="color" />
+    <attr name="common_color_text_main" format="color" />
+    <attr name="common_color_text_sub" format="color" />
+</resources>

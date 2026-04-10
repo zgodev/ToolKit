@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_tab_chat"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="@string/home_tab_chat"/>
+    <item
+        android:id="@+id/home_tab_contacts"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/home_tab_contacts"/>
+    <item
+        android:id="@+id/home_tab_discover"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="@string/home_tab_discover"/>
+    <item
+        android:id="@+id/home_tab_mine"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/home_tab_mine"/>
+</menu>

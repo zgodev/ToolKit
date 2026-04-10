@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 中性色 -->
+    <color name="common_white">#FFFFFFFF</color>
+    <color name="common_black">#FF000000</color>
+    <color name="common_transparent">#00000000</color>
+    <color name="common_bg_page">#FFF5F5F5</color>
+    <color name="common_line">#FFE6E6E6</color>
+    <color name="common_text_main">#FF333333</color>
+    <color name="common_text_sub">#FF999999</color>
+    <color name="common_text_hint">#FFCCCCCC</color>
+
+    <!-- 蓝色主题 -->
+    <color name="common_blue_primary">#FF1976D2</color>
+    <color name="common_blue_primary_dark">#FF115293</color>
+    <color name="common_blue_accent">#FF42A5F5</color>
+
+    <!-- 红色主题 -->
+    <color name="common_red_primary">#FFD32F2F</color>
+    <color name="common_red_primary_dark">#FF9A0007</color>
+    <color name="common_red_accent">#FFEF5350</color>
+
+    <!-- 绿色主题（类微信） -->
+    <color name="common_green_primary">#FF07C160</color>
+    <color name="common_green_primary_dark">#FF05974C</color>
+    <color name="common_green_accent">#FF10AD57</color>
+
+    <!-- 紫色主题 -->
+    <color name="common_purple_primary">#FF7B1FA2</color>
+    <color name="common_purple_primary_dark">#FF4A0072</color>
+    <color name="common_purple_accent">#FFAB47BC</color>
+
+    <!-- 暗夜 -->
+    <color name="common_dark_primary">#FF1C1C1E</color>
+    <color name="common_dark_primary_dark">#FF000000</color>
+    <color name="common_dark_accent">#FF0A84FF</color>
+    <color name="common_dark_bg">#FF121212</color>
+    <color name="common_dark_text_main">#FFEEEEEE</color>
+    <color name="common_dark_text_sub">#FFAAAAAA</color>
+</resources>

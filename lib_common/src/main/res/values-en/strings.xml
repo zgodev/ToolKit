@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_app_name">ToolKit</string>
+
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="common_save">Save</string>
+    <string name="common_loading">Loading...</string>
+    <string name="common_retry">Retry</string>
+    <string name="common_empty">No data</string>
+
+    <string name="common_net_error">Network error, please try later</string>
+    <string name="common_net_timeout">Request timeout</string>
+</resources>

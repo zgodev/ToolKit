@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 基础主题（不带状态栏色等具体属性，由子主题覆盖） -->
+    <style name="Common_Theme_Base" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">?attr/common_color_bg</item>
+        <item name="android:textColorPrimary">?attr/common_color_text_main</item>
+    </style>
+
+    <!-- ========== 蓝色（默认） ========== -->
+    <style name="Common_Theme_Blue" parent="Common_Theme_Base">
+        <item name="colorPrimary">@color/common_blue_primary</item>
+        <item name="colorPrimaryDark">@color/common_blue_primary_dark</item>
+        <item name="colorAccent">@color/common_blue_accent</item>
+        <item name="common_color_primary">@color/common_blue_primary</item>
+        <item name="common_color_primary_dark">@color/common_blue_primary_dark</item>
+        <item name="common_color_accent">@color/common_blue_accent</item>
+        <item name="common_color_bg">@color/common_bg_page</item>
+        <item name="common_color_text_main">@color/common_text_main</item>
+        <item name="common_color_text_sub">@color/common_text_sub</item>
+    </style>
+
+    <!-- ========== 红色 ========== -->
+    <style name="Common_Theme_Red" parent="Common_Theme_Base">
+        <item name="colorPrimary">@color/common_red_primary</item>
+        <item name="colorPrimaryDark">@color/common_red_primary_dark</item>
+        <item name="colorAccent">@color/common_red_accent</item>
+        <item name="common_color_primary">@color/common_red_primary</item>
+        <item name="common_color_primary_dark">@color/common_red_primary_dark</item>
+        <item name="common_color_accent">@color/common_red_accent</item>
+        <item name="common_color_bg">@color/common_bg_page</item>
+        <item name="common_color_text_main">@color/common_text_main</item>
+        <item name="common_color_text_sub">@color/common_text_sub</item>
+    </style>
+
+    <!-- ========== 绿色 ========== -->
+    <style name="Common_Theme_Green" parent="Common_Theme_Base">
+        <item name="colorPrimary">@color/common_green_primary</item>
+        <item name="colorPrimaryDark">@color/common_green_primary_dark</item>
+        <item name="colorAccent">@color/common_green_accent</item>
+        <item name="common_color_primary">@color/common_green_primary</item>
+        <item name="common_color_primary_dark">@color/common_green_primary_dark</item>
+        <item name="common_color_accent">@color/common_green_accent</item>
+        <item name="common_color_bg">@color/common_bg_page</item>
+        <item name="common_color_text_main">@color/common_text_main</item>
+        <item name="common_color_text_sub">@color/common_text_sub</item>
+    </style>
+
+    <!-- ========== 紫色 ========== -->
+    <style name="Common_Theme_Purple" parent="Common_Theme_Base">
+        <item name="colorPrimary">@color/common_purple_primary</item>
+        <item name="colorPrimaryDark">@color/common_purple_primary_dark</item>
+        <item name="colorAccent">@color/common_purple_accent</item>
+        <item name="common_color_primary">@color/common_purple_primary</item>
+        <item name="common_color_primary_dark">@color/common_purple_primary_dark</item>
+        <item name="common_color_accent">@color/common_purple_accent</item>
+        <item name="common_color_bg">@color/common_bg_page</item>
+        <item name="common_color_text_main">@color/common_text_main</item>
+        <item name="common_color_text_sub">@color/common_text_sub</item>
+    </style>
+
+    <!-- ========== 暗夜 ========== -->
+    <style name="Common_Theme_Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/common_dark_primary</item>
+        <item name="colorPrimaryDark">@color/common_dark_primary_dark</item>
+        <item name="colorAccent">@color/common_dark_accent</item>
+        <item name="common_color_primary">@color/common_dark_primary</item>
+        <item name="common_color_primary_dark">@color/common_dark_primary_dark</item>
+        <item name="common_color_accent">@color/common_dark_accent</item>
+        <item name="common_color_bg">@color/common_dark_bg</item>
+        <item name="common_color_text_main">@color/common_dark_text_main</item>
+        <item name="common_color_text_sub">@color/common_dark_text_sub</item>
+        <item name="android:windowBackground">@color/common_dark_bg</item>
+    </style>
+
+    <!-- 全屏 Dialog -->
+    <style name="Common_LoadingDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+</resources>

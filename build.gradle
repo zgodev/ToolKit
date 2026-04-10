@@ -1,21 +1,43 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file. 通用配置集中在 config.gradle
 apply from: "config.gradle"
 
 buildscript {
-    ext.kotlin_version = "1.5.0"
+    ext.kotlin_version = "1.6.10"
 
     repositories {
         google()
         mavenCentral()
+        maven {
+            allowInsecureProtocol = true
+            url 'https://repo.e-iceblue.com/nexus/content/groups/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+
+        maven{
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+        }
+        maven{
+            allowInsecureProtocol = true
+            url 'https://repo1.maven.org/maven2/'
+        }
+        maven {
+            allowInsecureProtocol = true
+            url "https://mirrors.tencent.com/repository/maven/tencent_public"
+        }
+        maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
-        classpath 'com.github.kezong:fat-aar:1.3.8'//分模块导出aar
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.0.0'
+        classpath "com.android.tools.build:gradle:7.1.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // ARouter 注解处理器
+        // 不需要额外 classpath，使用 kapt 即可
     }
 }
 
@@ -23,6 +45,30 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            allowInsecureProtocol = true
+            url 'https://repo.e-iceblue.com/nexus/content/groups/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+
+        maven{
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+        }
+        maven{
+            allowInsecureProtocol = true
+            url 'https://repo1.maven.org/maven2/'
+        }
+        maven {
+            allowInsecureProtocol = true
+            url "https://mirrors.tencent.com/repository/maven/tencent_public"
+        }
         maven { url "https://jitpack.io" }
     }
 }

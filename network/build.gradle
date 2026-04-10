@@ -1,31 +1,16 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
-}
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.github.zgodev'
-                artifactId = 'network'
-                version = '1.0.1'
-            }
-        }
-    }
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
     namespace 'com.zhangyt.network'
-    compileSdkVersion 32
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -41,8 +26,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions { jvmTarget = '1.8' }
 }
 
 dependencies {
-    implementation project(path:':utils')
+    api rootProject.ext.dependencies["retrofit"]
+    api rootProject.ext.dependencies["retrofit-gson"]
+    api rootProject.ext.dependencies["okhttp"]
+    api rootProject.ext.dependencies["okhttp-log"]
+    api rootProject.ext.dependencies["gson"]
+    api rootProject.ext.dependencies["websocket"]
+
+    api rootProject.ext.dependencies["coroutines-core"]
+    api rootProject.ext.dependencies["coroutines-android"]
+
+    implementation project(path: ':utils')
 }

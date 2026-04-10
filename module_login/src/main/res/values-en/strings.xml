@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_welcome">Welcome to ToolKit</string>
+    <string name="login_hint_account">Phone / account</string>
+    <string name="login_hint_password">Password</string>
+    <string name="login_btn_login">Login</string>
+    <string name="login_tip">By logging in, you agree to Terms and Privacy Policy</string>
+</resources>

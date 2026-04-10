@@ -1,5 +1,23 @@
+/*
+ * 组件化项目模块管理
+ * ---------------------------------------------
+ *  :app            应用壳工程（仅负责集成，本身不写业务）
+ *  :lib_common     基础库：BaseActivity、MVVM/MVI、ARouter、主题、多语言、屏幕适配、扩展等
+ *  :network        网络层：Retrofit + OkHttp + Coroutines/Flow
+ *  :utils          工具类：文件、Bitmap、SP、日期、日志等
+ *  :widget         自定义 View：对话框、TitleBar、LoadingLayout 等
+ *  :module_login   业务模块：登录
+ *  :module_home    业务模块：主页（类微信 Tab 架构）
+ *  :module_mine    业务模块：我的
+ * ---------------------------------------------
+ */
 rootProject.name = "ToolKit"
+
 include ':app'
-include ':utils'
+include ':lib_common'
 include ':network'
+include ':utils'
 include ':widget'
+include ':module_login'
+include ':module_home'
+// include ':module_mine'   // 占位：后续若拆分 "我的" 子业务可启用

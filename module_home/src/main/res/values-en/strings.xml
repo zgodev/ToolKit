@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_tab_chat">Chats</string>
+    <string name="home_tab_contacts">Contacts</string>
+    <string name="home_tab_discover">Discover</string>
+    <string name="home_tab_mine">Me</string>
+
+    <string name="home_theme_switch">Switch Theme</string>
+    <string name="home_language_switch">Switch Language</string>
+    <string name="home_logout">Logout</string>
+</resources>

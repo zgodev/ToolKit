@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@android:color/white"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@mipmap/ic_launcher_round"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvNickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?attr/common_color_text_main"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/ivAvatar"
+        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintEnd_toStartOf="@id/tvTime"/>
+
+    <TextView
+        android:id="@+id/tvLastMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?attr/common_color_text_sub"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/tvNickname"
+        app:layout_constraintStart_toStartOf="@id/tvNickname"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/common_color_text_sub"
+        android:textSize="11sp"
+        app:layout_constraintTop_toTopOf="@id/tvNickname"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvUnread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/home_bg_unread"
+        android:minWidth="18dp"
+        android:minHeight="18dp"
+        android:gravity="center"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/tvLastMessage"
+        app:layout_constraintBottom_toBottomOf="@id/tvLastMessage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
