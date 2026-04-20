@@ -1,6 +1,7 @@
 package com.zhangyt.utils;
 
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,6 +15,8 @@ import android.util.Log;
 
 import com.guo.android_extend.image.ImageConverter;
 import com.libyuv.util.TRYuvUtil;
+
+import org.apache.log4j.lf5.util.Resource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -1027,4 +1030,33 @@ public class BitmapUtil {
     }
 
 
+    /**
+     * 获取图片，高效加载大图并防止内存溢出（OOM）
+     * @param resId 图片资源id
+     * @param resource 资源
+     * @param vWidth 显示图片的宽
+     * @param vHeight 显示图片的高
+     * @return
+     */
+    public static Bitmap decodeBitmap(int resId, Resources resource, int vWidth, int vHeight){
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(resource, resId, opts);
+        opts.inSampleSize = calculateInSampleSize(opts, vWidth, vHeight);
+        opts.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(resource, resId, opts);
+    }
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
 }

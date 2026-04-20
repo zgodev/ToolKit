@@ -3,9 +3,11 @@ package com.zhangyt.module.login.repository
 import com.zhangyt.common.base.BaseRepository
 import com.zhangyt.common.user.UserInfo
 import com.zhangyt.module.login.api.LoginApi
+import com.zhangyt.module.login.api.LoginRequest
 import com.zhangyt.network.client.RetrofitClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /**
  * 登录 Repository。
@@ -42,4 +44,7 @@ class LoginRepository : BaseRepository() {
         )
         emit(fakeUser)
     }
+    fun login2(account: String, pwd: String): Flow<UserInfo> = request {
+        api.login(LoginRequest(account, pwd))
+    }.map { UserInfo(it.userId, it.nickname, it.avatar, it.phone, it.token) }
 }
