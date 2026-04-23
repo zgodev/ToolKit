@@ -9,6 +9,16 @@ import com.tencent.mmkv.MMKV
 import com.zhangyt.common.language.LanguageManager
 import com.zhangyt.common.theme.ThemeManager
 import com.zhangyt.common.utils.AppManager
+import com.elvishew.xlog.LogConfiguration
+import com.elvishew.xlog.LogLevel
+import com.elvishew.xlog.XLog
+import com.elvishew.xlog.printer.AndroidPrinter
+import com.elvishew.xlog.printer.file.FilePrinter
+import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy
+import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy
+import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator
+import com.elvishew.xlog.flattener.PatternFlattener
+import java.io.File
 
 /**
  * 所有子模块通用的 Application 基类。
@@ -65,5 +75,59 @@ open class CommonApplication : Application() {
 
         // 主题初始化
         ThemeManager.init(this)
+
+        // XLog 日志框架初始化
+        initXLog()
+        try {
+            throw NullPointerException()
+        } catch (e: Exception) {
+            XLog.tag("TAG").e(e)
+        }
+    }
+
+    /**
+     * 初始化 XLog 日志框架
+     *
+     * - Debug 模式：ALL 级别，输出到 Logcat + 文件
+     * - Release 模式：WARN 级别，仅输出到文件（方便线上排查）
+     */
+    private fun initXLog() {
+        val config = LogConfiguration.Builder()
+            .logLevel(if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.WARN)
+            .tag("ToolKit")
+            .enableThreadInfo()
+            .enableStackTrace(5)
+            .build()
+
+        // Logcat 打印器
+        val androidPrinter = AndroidPrinter(true)
+
+        // 文件打印器：日志写入文件，方便排查线上问题
+        // getExternalFilesDir 可能返回 null（外部存储不可用），此时仅用 Logcat
+        val externalDir = getExternalFilesDir(null)
+        val filePrinter = externalDir?.let {
+            val logDir = File(it, "logs").absolutePath
+            FilePrinter.Builder(logDir)
+                .fileNameGenerator(DateFileNameGenerator())
+                .backupStrategy(FileSizeBackupStrategy(5 * 1024 * 1024))        // 单文件最大 5MB
+                .cleanStrategy(FileLastModifiedCleanStrategy(7L * 24 * 3600_000)) // 保留 7 天
+                .flattener(PatternFlattener("{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}")) // 自定义时间格式
+                .build()
+        }
+
+        if (BuildConfig.DEBUG) {
+            if (filePrinter != null) {
+                XLog.init(config, androidPrinter, filePrinter)
+            } else {
+                XLog.init(config, androidPrinter)
+            }
+        } else {
+            if (filePrinter != null) {
+                XLog.init(config, filePrinter)
+            } else {
+                // 外部存储不可用，降级到 Logcat
+                XLog.init(config, androidPrinter)
+            }
+        }
     }
 }

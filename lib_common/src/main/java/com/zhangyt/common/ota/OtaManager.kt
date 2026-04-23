@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
+import com.elvishew.xlog.XLog
 import androidx.core.content.FileProvider
 import androidx.lifecycle.LiveData
 import androidx.work.*
@@ -58,7 +58,7 @@ class OtaManager(private val context: Context) {
             val workInfos = workManager.getWorkInfosForUniqueWork(OTA_WORK_NAME).get()
             workInfos.any { !it.state.isFinished }
         } catch (e: Exception) {
-            Log.w(TAG, "查询任务状态失败: ${e.message}")
+            XLog.tag(TAG).w("查询任务状态失败: ${e.message}")
             false
         }
     }
@@ -74,7 +74,7 @@ class OtaManager(private val context: Context) {
                     val workInfos = future.get()
                     callback(workInfos.any { !it.state.isFinished })
                 } catch (e: Exception) {
-                    Log.w(TAG, "异步查询任务状态失败: ${e.message}")
+                    XLog.tag(TAG).w("异步查询任务状态失败: ${e.message}")
                     callback(false)
                 }
             },
@@ -94,11 +94,11 @@ class OtaManager(private val context: Context) {
      * @param callback 回调：true = 成功入队；false = 已有任务在执行，本次被忽略
      */
     fun startDownload(otaInfo: OtaInfo, callback: (Boolean) -> Unit) {
-        Log.d(TAG, "请求下载: ${otaInfo.downloadUrl}")
+        XLog.tag(TAG).d("请求下载: ${otaInfo.downloadUrl}")
 
         isDownloadingAsync { downloading ->
             if (downloading) {
-                Log.d(TAG, "已有下载任务在执行，本次请求被忽略")
+                XLog.tag(TAG).d("已有下载任务在执行，本次请求被忽略")
                 callback(false)
             } else {
                 enqueueWork(otaInfo, ExistingWorkPolicy.KEEP)
@@ -115,7 +115,7 @@ class OtaManager(private val context: Context) {
      * @param otaInfo OTA 升级信息
      */
     fun forceStartDownload(otaInfo: OtaInfo) {
-        Log.d(TAG, "强制下载（覆盖旧任务）: ${otaInfo.downloadUrl}")
+        XLog.tag(TAG).d("强制下载（覆盖旧任务）: ${otaInfo.downloadUrl}")
         // 清除旧的临时文件，防止新任务误续传旧版本的数据
         cleanTempFiles(otaInfo.versionName)
         enqueueWork(otaInfo, ExistingWorkPolicy.REPLACE)
@@ -134,14 +134,14 @@ class OtaManager(private val context: Context) {
             val apkFile = File(downloadDir, "update_${versionName}.apk")
             if (tempFile.exists()) {
                 tempFile.delete()
-                Log.d(TAG, "已清除临时文件: ${tempFile.name}")
+                XLog.tag(TAG).d("已清除临时文件: ${tempFile.name}")
             }
             if (apkFile.exists()) {
                 apkFile.delete()
-                Log.d(TAG, "已清除旧 APK: ${apkFile.name}")
+                XLog.tag(TAG).d("已清除旧 APK: ${apkFile.name}")
             }
         } catch (e: Exception) {
-            Log.w(TAG, "清除临时文件失败: ${e.message}")
+            XLog.tag(TAG).w("清除临时文件失败: ${e.message}")
         }
     }
 
@@ -173,7 +173,7 @@ class OtaManager(private val context: Context) {
             .build()
 
         workManager.enqueueUniqueWork(OTA_WORK_NAME, policy, workRequest)
-        Log.d(TAG, "下载任务已入队: ${workRequest.id}, 策略: $policy")
+        XLog.tag(TAG).d("下载任务已入队: ${workRequest.id}, 策略: $policy")
     }
 
     /**
@@ -190,7 +190,7 @@ class OtaManager(private val context: Context) {
      * 取消下载任务
      */
     fun cancelDownload() {
-        Log.d(TAG, "取消下载任务")
+        XLog.tag(TAG).d("取消下载任务")
         workManager.cancelUniqueWork(OTA_WORK_NAME)
     }
 
@@ -202,7 +202,7 @@ class OtaManager(private val context: Context) {
     fun installApk(filePath: String) {
         val file = File(filePath)
         if (!file.exists()) {
-            Log.e(TAG, "APK 文件不存在: $filePath")
+            XLog.tag(TAG).e("APK 文件不存在: $filePath")
             return
         }
 

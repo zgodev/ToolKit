@@ -83,6 +83,7 @@ dependencies {
     api rootProject.ext.dependencies["brvah"]
 
     api rootProject.ext.dependencies["worker"]
+    api rootProject.ext.dependencies["xlog"]
 
     // 依赖其他基础模块
     api project(path: ':utils')

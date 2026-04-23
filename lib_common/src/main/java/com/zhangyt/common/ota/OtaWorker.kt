@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Environment
-import android.util.Log
+import com.elvishew.xlog.XLog
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -83,7 +83,7 @@ class OtaWorker(
         val expectedSize = inputData.getLong(KEY_FILE_SIZE, 0L)
 
         if (downloadUrl.isNullOrBlank()) {
-            Log.e(TAG, "下载地址为空")
+            XLog.tag(TAG).e("下载地址为空")
             return@withContext Result.failure(
                 Data.Builder().putString("error", "下载地址为空").build()
             )
@@ -93,7 +93,7 @@ class OtaWorker(
         try {
             setForeground(createForegroundInfo(versionName, 0))
         } catch (e: Exception) {
-            Log.w(TAG, "设置前台服务失败: ${e.message}")
+            XLog.tag(TAG).w("设置前台服务失败: ${e.message}")
         }
 
         try {
@@ -109,12 +109,12 @@ class OtaWorker(
 
             // 如果最终文件已存在，说明之前已经下载完成，直接返回
             if (apkFile.exists()) {
-                Log.d(TAG, "APK 文件已存在，跳过下载: ${apkFile.absolutePath}")
+                XLog.tag(TAG).d("APK 文件已存在，跳过下载: ${apkFile.absolutePath}")
                 // 但仍需校验 MD5（防止文件损坏）
                 if (fileMd5.isNotBlank()) {
                     val localMd5 = getFileMd5(apkFile)
                     if (!fileMd5.equals(localMd5, ignoreCase = true)) {
-                        Log.w(TAG, "已有文件 MD5 不匹配，删除重新下载")
+                        XLog.tag(TAG).w("已有文件 MD5 不匹配，删除重新下载")
                         apkFile.delete()
                         tempFile.delete() // 同时清理残留的临时文件
                     } else {
@@ -135,11 +135,11 @@ class OtaWorker(
                 downloadedBytes = tempFile.length()
                 // 如果已知文件总大小，且临时文件大小超出，说明文件已损坏
                 if (expectedSize > 0 && downloadedBytes > expectedSize) {
-                    Log.w(TAG, "临时文件大小异常 ($downloadedBytes > $expectedSize)，删除重新下载")
+                    XLog.tag(TAG).w("临时文件大小异常 ($downloadedBytes > $expectedSize)，删除重新下载")
                     tempFile.delete()
                     downloadedBytes = 0L
                 } else if (downloadedBytes > 0) {
-                    Log.d(TAG, "发现临时文件，已下载 ${downloadedBytes} 字节，尝试断点续传")
+                    XLog.tag(TAG).d("发现临时文件，已下载 ${downloadedBytes} 字节，尝试断点续传")
                 }
             }
 
@@ -148,7 +148,7 @@ class OtaWorker(
             //  此时不能继续重命名，直接返回 retry 等下次续传
             val downloadComplete = downloadFile(downloadUrl, tempFile, versionName, downloadedBytes)
             if (!downloadComplete) {
-                Log.d(TAG, "下载被中断，保留临时文件等待下次续传")
+                XLog.tag(TAG).d("下载被中断，保留临时文件等待下次续传")
                 return@withContext Result.retry()
             }
 
@@ -159,19 +159,19 @@ class OtaWorker(
                 tempFile.copyTo(apkFile, overwrite = true)
                 tempFile.delete()
             }
-            Log.d(TAG, "临时文件已重命名: ${tempFile.name} -> ${apkFile.name}")
+            XLog.tag(TAG).d("临时文件已重命名: ${tempFile.name} -> ${apkFile.name}")
 
             // MD5 校验
             if (fileMd5.isNotBlank()) {
                 val localMd5 = getFileMd5(apkFile)
                 if (!fileMd5.equals(localMd5, ignoreCase = true)) {
                     apkFile.delete()
-                    Log.e(TAG, "MD5 校验失败: 期望=$fileMd5, 实际=$localMd5")
+                    XLog.tag(TAG).e("MD5 校验失败: 期望=$fileMd5, 实际=$localMd5")
                     return@withContext Result.failure(
                         Data.Builder().putString("error", "MD5校验失败，请重新下载").build()
                     )
                 }
-                Log.d(TAG, "MD5 校验通过")
+                XLog.tag(TAG).d("MD5 校验通过")
             }
 
             // 下载成功，返回文件路径
@@ -179,11 +179,11 @@ class OtaWorker(
                 .putString(KEY_FILE_PATH, apkFile.absolutePath)
                 .build()
 
-            Log.d(TAG, "下载完成: ${apkFile.absolutePath}")
+            XLog.tag(TAG).d("下载完成: ${apkFile.absolutePath}")
             Result.success(outputData)
 
         } catch (e: Exception) {
-            Log.e(TAG, "下载失败: ${e.message}", e)
+            XLog.tag(TAG).e("下载失败: ${e.message}", e)
             // 返回 retry，WorkManager 会按退避策略重新调度，
             // 下次执行时自动从 .tmp 断点续传
             Result.retry()
@@ -212,7 +212,7 @@ class OtaWorker(
             // 断点续传：设置 Range 请求头
             if (startBytes > 0) {
                 setRequestProperty("Range", "bytes=$startBytes-")
-                Log.d(TAG, "请求 Range: bytes=$startBytes-")
+                XLog.tag(TAG).d("请求 Range: bytes=$startBytes-")
             }
         }
 
@@ -234,14 +234,14 @@ class OtaWorker(
                     // 206：服务端支持续传
                     isResuming = true
                     downloadedBytes = startBytes
-                    Log.d(TAG, "服务端支持续传 (206)，从 $startBytes 字节继续")
+                    XLog.tag(TAG).d("服务端支持续传 (206)，从 $startBytes 字节继续")
                 }
                 HttpURLConnection.HTTP_OK -> {
                     // 200：服务端不支持 Range 或返回完整内容
                     isResuming = false
                     downloadedBytes = 0L
                     if (startBytes > 0) {
-                        Log.w(TAG, "服务端不支持续传 (200)，从头开始下载")
+                        XLog.tag(TAG).w("服务端不支持续传 (200)，从头开始下载")
                         // 清空已有的临时文件
                         if (outputFile.exists()) outputFile.delete()
                     }
@@ -273,7 +273,7 @@ class OtaWorker(
                         // 检查是否被取消——注意：不删除临时文件！
                         if (isStopped) {
                             output.flush()
-                            Log.d(TAG, "任务被停止，已保留临时文件 (${currentBytes} 字节)，下次可续传")
+                            XLog.tag(TAG).d("任务被停止，已保留临时文件 (${currentBytes} 字节)，下次可续传")
                             return false  // 【Bug #1 修复】返回 false 表示未完成
                         }
 
@@ -310,7 +310,7 @@ class OtaWorker(
             // 最终进度设为 100%
             setProgress(Data.Builder().putInt(KEY_PROGRESS, 100).build())
 
-            Log.d(TAG, "文件写入完成，共 $currentBytes 字节")
+            XLog.tag(TAG).d("文件写入完成，共 $currentBytes 字节")
             return true  // 下载完成
         } finally {
             connection.disconnect()
