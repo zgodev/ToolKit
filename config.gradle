@@ -54,6 +54,7 @@ ext {
             brvah_version         : "3.0.7",   // RecyclerView 万能适配器
             websocket_version     : "1.5.2",
             jxl_version           : "2.6.12",
+            worker_version           : "2.7.1",
     ]
 
     /* ---------- 统一依赖 ---------- */
@@ -105,5 +106,6 @@ ext {
             "autosize"           : "me.jessyan:autosize:${version.autosize_version}",
             "brvah"              : "io.github.cymchad:BaseRecyclerViewAdapterHelper:${version.brvah_version}",
             "jxl"                : "net.sourceforge.jexcelapi:jxl:${version.jxl_version}",
+            "worker"        : "androidx.work:work-runtime-ktx:${version.worker_version}",
     ]
 }

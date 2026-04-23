@@ -32,6 +32,8 @@ object RouterPath {
     /* ---------- 我的模块（暂放在 module_home 内） ---------- */
     object Mine {
         const val ACTIVITY_SETTINGS = "/mine/activity_settings"
+        const val ACTIVITY_OTA = "/test/activity_ota"
+
     }
 
     /* ---------- 通用页面 ---------- */

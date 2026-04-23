@@ -8,4 +8,5 @@
     <string name="home_theme_switch">Switch Theme</string>
     <string name="home_language_switch">Switch Language</string>
     <string name="home_logout">Logout</string>
+    <string name="home_check_update">Check Update</string>
 </resources>

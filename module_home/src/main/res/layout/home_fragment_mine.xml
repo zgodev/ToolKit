@@ -156,7 +156,14 @@
                 android:layout_marginStart="6dp"
                 android:text="日本語"/>
         </LinearLayout>
-
+        <Button
+            android:id="@+id/btnCheckUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/home_check_update"
+            android:textColor="@android:color/white"
+            android:background="?attr/common_color_primary"/>
         <!-- 退出登录 -->
         <Button
             android:id="@+id/btnLogout"

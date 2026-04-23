@@ -82,6 +82,8 @@ dependencies {
     // RecyclerView 适配器
     api rootProject.ext.dependencies["brvah"]
 
+    api rootProject.ext.dependencies["worker"]
+
     // 依赖其他基础模块
     api project(path: ':utils')
     api project(path: ':widget')

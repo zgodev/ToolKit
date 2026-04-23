@@ -1,5 +1,7 @@
 package com.zhangyt.network.config
 
+import com.zhangyt.network.BuildConfig
+
 /**
  * 网络层配置。调用方在 Application 中设置，如：
  * ```
@@ -13,7 +15,7 @@ object NetworkConfig {
     var baseUrl: String = "https://fake.api.example.com/"
 
     /** 是否打印日志。release 关闭。 */
-    var debuggable: Boolean = true
+    var debuggable: Boolean = BuildConfig.DEBUG
 
     /** 连接超时（秒） */
     var connectTimeout: Long = 15

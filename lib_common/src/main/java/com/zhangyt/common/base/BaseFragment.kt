@@ -48,7 +48,12 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
+    fun navigation(path: String,bundle: Bundle?=null){
+        if (bundle!=null)
+            ARouter.getInstance().build(path).with(bundle).navigation()
+        else
+            ARouter.getInstance().build(path).navigation()
+    }
     protected abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     protected open fun initView() {}
     protected open fun initData() {}

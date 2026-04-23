@@ -7,6 +7,7 @@ import com.zhangyt.common.ext.click
 import com.zhangyt.common.ext.toast
 import com.zhangyt.common.language.Language
 import com.zhangyt.common.language.LanguageManager
+import com.zhangyt.common.router.RouterPath
 import com.zhangyt.common.theme.ThemeManager
 import com.zhangyt.common.theme.ThemeStyle
 import com.zhangyt.common.user.UserManager
@@ -45,7 +46,7 @@ class MineFragment : BaseFragment<HomeFragmentMineBinding>() {
         binding.btnLangZh.click { LanguageManager.switch(requireContext(), Language.ZH_CN) }
         binding.btnLangEn.click { LanguageManager.switch(requireContext(), Language.EN) }
         binding.btnLangJa.click { LanguageManager.switch(requireContext(), Language.JA) }
-
+        binding.btnCheckUpdate.click { navigation(RouterPath.Mine.ACTIVITY_OTA) }
         // 退出登录
         binding.btnLogout.click {
             UserManager.logout()

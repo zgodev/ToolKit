@@ -1,0 +1,42 @@
+OTA 功能实现总结
+
+创建/修改的文件
+
+module_Mine 模块（新增 4 个核心文件）
+
+文件说明ota/OtaInfo.ktOTA 数据模型，包含版本号、下载地址、MD5、更新日志等ota/OtaWorker.kt核心 - WorkManager 的 CoroutineWorker，负责后台下载 APKota/OtaManager.ktOTA 管理器，封装 WorkManager 任务的创建、观察、取消和安装ota/OtaActivity.ktOTA 升级 UI 页面，显示版本信息、下载进度、操作按钮配置文件（修改 4 个）
+
+文件变更module_Mine/build.gradle新增 WorkManager 依赖module_Mine/AndroidManifest.xml注册 OtaActivity + FileProvider（安装 APK 用）app/build.gradle添加 module_Mine 模块依赖lib_common/RouterPath.kt添加 Test.ACTIVITY_OTA 路由路径资源文件（新增 2 个）
+
+文件说明res/layout/test_activity_ota.xmlOTA 页面布局（版本信息卡片 + 进度条 + 按钮）res/xml/test_file_paths.xmlFileProvider 路径配置────────────────────────────────────────
+关键设计
+
+1. WorkManager + CoroutineWorker：后台下载，即使 App 被杀也能自动恢复
+
+
+2. 前台通知：通知栏实时显示下载进度，符合 Android 12+ 要求
+
+
+3. MD5 校验：下载完成后可选校验文件完整性
+
+
+4. 失败重试：BackoffPolicy.LINEAR 线性退避策略，30 秒后自动重试
+
+
+5. 网络约束：仅在有网络且存储空间充足时下载
+
+
+6. FileProvider：兼容 Android 7.0+ 的 APK 安装
+
+7. 支持断点续传
+
+
+在 App 中跳转到 OTA 页面
+
+
+// 任意位置通过 ARouter 跳转
+ARouter.getInstance()
+    .build(RouterPath.Mine.ACTIVITY_OTA)
+    .navigation()
+
+│ 注意：当前 mockOtaInfo 中的 downloadUrl 是模拟地址，实际使用时需替换为真实的服务端接口返回的 OTA 信息。

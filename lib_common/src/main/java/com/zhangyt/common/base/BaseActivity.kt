@@ -30,7 +30,7 @@ import me.jessyan.autosize.internal.CustomAdapt
  * }
  * ```
  */
-abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(), CustomAdapt {
+abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     protected lateinit var binding: VB
         private set
@@ -73,6 +73,13 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(), CustomAdapt
     /** 订阅 ViewModel 的 LiveData / Flow。 */
     protected open fun observeViewModel() {}
 
+    fun navigation(path: String,bundle: Bundle?=null){
+        if (bundle!=null)
+            ARouter.getInstance().build(path).with(bundle).navigation()
+        else
+            ARouter.getInstance().build(path).navigation()
+    }
+
     /** 显示全局 Loading。 */
     fun showLoading(message: String = "加载中...") {
         if (!isFinishing && !loadingDialog.isShowing) {
@@ -85,35 +92,4 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(), CustomAdapt
     fun hideLoading() {
         if (loadingDialog.isShowing) loadingDialog.dismiss()
     }
-
-    // --------------- AutoSize 屏幕适配 -----------------
-    /**
-     * 设计稿基准尺寸（dp）。
-     * - 设计稿宽度（竖屏时使用）
-     * - 设计稿高度（横屏时使用）
-     * 项目里如果设计稿不一样，子类重写或修改这两个常量即可。
-     */
-    protected open val designWidthDp: Float get() = 360f
-    protected open val designHeightDp: Float get() = 640f
-
-    /** 当前是否横屏 */
-    private val isLandscape: Boolean
-        get() = resources.configuration.orientation ==
-                android.content.res.Configuration.ORIENTATION_LANDSCAPE
-
-    /**
-     * 自动选择"窄边"作为基准维度：
-     * - 竖屏（手机/平板都包含）：宽是窄边 → isBaseOnWidth = true
-     * - 横屏：高是窄边 → isBaseOnWidth = false
-     *
-     * 这样可以避免横屏时所有 View 被压缩、平板竖屏时按高度溢出的问题。
-     */
-    override fun isBaseOnWidth(): Boolean = isLandscape
-
-    /**
-     * 配合 [isBaseOnWidth]：
-     * - 竖屏返回设计宽
-     * - 横屏返回设计高
-     */
-    override fun getSizeInDp(): Float = designWidthDp
 }

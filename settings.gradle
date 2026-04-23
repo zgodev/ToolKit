@@ -20,4 +20,4 @@ include ':utils'
 include ':widget'
 include ':module_login'
 include ':module_home'
-// include ':module_mine'   // 占位：后续若拆分 "我的" 子业务可启用
+include ':module_mine'
