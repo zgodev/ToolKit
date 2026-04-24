@@ -2,20 +2,18 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    namespace 'com.zhangyt.module.login'
+    compileSdk rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [AROUTER_MODULE_NAME: project.getName()]
-            }
-        }
     }
 
     buildTypes {
@@ -25,15 +23,29 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = '1.8' }
+    kotlinOptions { jvmTarget = '17' }
     buildFeatures { viewBinding true }
     resourcePrefix "login_"
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.name)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AAROUTER_MODULE_NAME=${project.name}")
 }
 
 dependencies {
     api project(path: ':lib_common')
     kapt rootProject.ext.dependencies["arouter-compiler"]
+
+    // Hilt：插件要求每个应用插件的 module 都显式依赖 hilt-android（不认传递依赖）
+    implementation rootProject.ext.dependencies["hilt"]
+    ksp rootProject.ext.dependencies["hilt-compiler"]
 }

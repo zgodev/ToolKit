@@ -4,20 +4,38 @@ import com.zhangyt.common.base.BaseRepository
 import com.zhangyt.common.user.UserInfo
 import com.zhangyt.module.login.api.LoginApi
 import com.zhangyt.module.login.api.LoginRequest
-import com.zhangyt.network.client.RetrofitClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * 登录 Repository。
  *
  * 为了方便演示，此处用假数据：网络层请求失败时会返回假用户。
  * 实际开发中请直接返回 [api.login] 的结果。
+ *
+ * -----------------------------------------------------------------
+ * Hilt 用法说明：
+ *
+ *   @Singleton            —— 整个 App 进程共享同一个 LoginRepository 实例
+ *                            （不加则每次注入都新建一个）。
+ *   @Inject constructor   —— 告诉 Hilt "这个类怎么造"：需要一个 LoginApi。
+ *                            Hilt 会顺着依赖链自动从 [LoginModule] 拿到 LoginApi。
+ *   private val api       —— 依赖变成构造参数而不是字段硬编码，好处：
+ *                              a) 单测可以 new LoginRepository(fakeApi)
+ *                              b) 换接口实现不用改本类
+ *                              c) 编译期校验，漏了绑定会编译失败而不是运行崩
+ *
+ * 使用方：LoginViewModel 通过 @Inject 拿到它 ——
+ *   `class LoginViewModel @Inject constructor(private val repo: LoginRepository)`
+ * -----------------------------------------------------------------
  */
-class LoginRepository : BaseRepository() {
-
-    private val api by lazy { RetrofitClient.create(LoginApi::class.java) }
+@Singleton
+class LoginRepository @Inject constructor(
+    private val api: LoginApi
+) : BaseRepository() {
 
     /**
      * 账号密码登录（演示版 - 返回假数据，绕过网络）。
@@ -44,6 +62,7 @@ class LoginRepository : BaseRepository() {
         )
         emit(fakeUser)
     }
+
     fun login2(account: String, pwd: String): Flow<UserInfo> = request {
         api.login(LoginRequest(account, pwd))
     }.map { UserInfo(it.userId, it.nickname, it.avatar, it.phone, it.token) }

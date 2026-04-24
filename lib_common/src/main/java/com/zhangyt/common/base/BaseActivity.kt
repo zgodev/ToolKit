@@ -53,14 +53,22 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // AutoSize：每次 onResume 做一次 density 重算，覆盖横竖屏/字体/分屏等运行时配置变更
         if (this is CustomAdapt) {
             AutoSizeCompat.autoConvertDensity(super.getResources(), sizeInDp, isBaseOnWidth)
-        } else {
-            if (this !is CancelAdapt) {
-                AutoSize.autoConvertDensityOfGlobal(this)
-            }
+        } else if (this !is CancelAdapt) {
+            AutoSize.autoConvertDensityOfGlobal(this)
         }
     }
+
+    override fun onDestroy() {
+        // 防止 Activity 销毁时 Dialog 未 dismiss 产生 WindowLeaked
+        if (loadingDialog.isShowing) {
+            runCatching { loadingDialog.dismiss() }
+        }
+        super.onDestroy()
+    }
+
     /** 提供 ViewBinding 实例。 */
     protected abstract fun getViewBinding(): VB
 
@@ -73,23 +81,23 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     /** 订阅 ViewModel 的 LiveData / Flow。 */
     protected open fun observeViewModel() {}
 
-    fun navigation(path: String,bundle: Bundle?=null){
-        if (bundle!=null)
-            ARouter.getInstance().build(path).with(bundle).navigation()
-        else
-            ARouter.getInstance().build(path).navigation()
+    fun navigation(path: String, bundle: Bundle? = null) {
+        val postcard = ARouter.getInstance().build(path)
+        if (bundle != null) postcard.with(bundle)
+        postcard.navigation()
     }
 
     /** 显示全局 Loading。 */
     fun showLoading(message: String = "加载中...") {
-        if (!isFinishing && !loadingDialog.isShowing) {
-            loadingDialog.setMessage(message)
-            loadingDialog.show()
-        }
+        if (isFinishing || isDestroyed) return
+        loadingDialog.setMessage(message)
+        if (!loadingDialog.isShowing) loadingDialog.show()
     }
 
     /** 隐藏全局 Loading。 */
     fun hideLoading() {
-        if (loadingDialog.isShowing) loadingDialog.dismiss()
+        if (isDestroyed) return
+        if (loadingDialog.isShowing) runCatching { loadingDialog.dismiss() }
     }
+
 }

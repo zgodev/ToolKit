@@ -11,6 +11,31 @@
  *  :module_mine    业务模块：我的
  * ---------------------------------------------
  */
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+}
+
+dependencyResolutionManagement {
+    // 禁止各 module 在自己的 build.gradle 里再声明仓库
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://jitpack.io' }
+        // e-iceblue 仅提供 http 仓库，单独保留 allowInsecureProtocol
+        maven {
+            url 'http://repo.e-iceblue.com/nexus/content/groups/public/'
+            allowInsecureProtocol = true
+        }
+    }
+}
+
 rootProject.name = "ToolKit"
 
 include ':app'

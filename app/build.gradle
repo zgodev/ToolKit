@@ -2,10 +2,13 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    namespace 'com.zhangyt.toolkit'
+    compileSdk rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
@@ -19,13 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // 多语言打包配置：只保留需要的语言资源
-        resConfigs "zh", "en", "ja"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [AROUTER_MODULE_NAME: project.getName()]
-            }
-        }
+        resourceConfigurations += ["zh", "en", "ja"]
     }
 
     buildTypes {
@@ -33,26 +30,49 @@ android {
             buildConfigField "String", "BASE_URL", "\"https://fake.api.example.com/\""
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"https://fake.api.example.com/\""
+            // 临时用 debug keystore 签 release，仅限本地联调；上架请换正式 keystore
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    bundle {
+        language {
+            enableSplit = true
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = '1.8' }
+    kotlinOptions { jvmTarget = '17' }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
+    packaging {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/NOTICE', 'META-INF/LICENSE']
+        }
     }
+}
+
+// ARouter：通过 kapt DSL + 全局 JavaCompile 两层兜底
+// Hilt 的 hiltJavaCompile${variant} 是独立 JavaCompile task，既不继承
+// defaultConfig.javaCompileOptions，也不读 kapt.arguments，必须直接 configureEach
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.name)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AAROUTER_MODULE_NAME=${project.name}")
 }
 
 dependencies {
@@ -64,6 +84,10 @@ dependencies {
 
     // ARouter 注解处理器（每个有 @Route 的模块都要加）
     kapt rootProject.ext.dependencies["arouter-compiler"]
+
+    // Hilt
+    implementation rootProject.ext.dependencies["hilt"]
+    ksp rootProject.ext.dependencies["hilt-compiler"]
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

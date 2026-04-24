@@ -204,7 +204,7 @@ class NodeProgressBar @JvmOverloads constructor(
             }
             start()
             addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     onProgressChangedListener?.invoke(progress)
                 }
             })

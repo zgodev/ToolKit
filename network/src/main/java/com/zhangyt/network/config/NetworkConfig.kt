@@ -1,6 +1,7 @@
 package com.zhangyt.network.config
 
 import com.zhangyt.network.BuildConfig
+import java.io.File
 
 /**
  * 网络层配置。调用方在 Application 中设置，如：
@@ -8,6 +9,8 @@ import com.zhangyt.network.BuildConfig
  * NetworkConfig.baseUrl   = BuildConfig.BASE_URL
  * NetworkConfig.debuggable = BuildConfig.DEBUG
  * NetworkConfig.tokenProvider = { UserManager.getToken() }
+ * NetworkConfig.cacheDir = context.cacheDir.resolve("http")
+ * NetworkConfig.onUnauthorized = { UserManager.logout() }
  * ```
  */
 object NetworkConfig {
@@ -34,4 +37,19 @@ object NetworkConfig {
         "Content-Type" to "application/json;charset=UTF-8",
         "Accept" to "application/json"
     )
+
+    /** 缓存目录（空则不启用 HTTP 缓存）。 */
+    var cacheDir: File? = null
+
+    /** 缓存大小（字节）。默认 10MB。 */
+    var cacheSize: Long = 10L * 1024 * 1024
+
+    /**
+     * 401 未授权回调。OkHttp 响应 `401` 或业务 `code == 401` 时触发一次。
+     * 通常用于清 Token + 广播登出事件。
+     */
+    var onUnauthorized: () -> Unit = {}
+
+    /** 日志截断阈值（字节）。debug 日志 body 超过此值会被截断。默认 4KB。 */
+    var logBodyMaxBytes: Long = 4 * 1024
 }

@@ -10,6 +10,7 @@ import com.zhangyt.common.router.RouterManager
 import com.zhangyt.common.router.RouterPath
 import com.zhangyt.module.login.databinding.LoginActivityLoginBinding
 import com.zhangyt.module.login.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * 登录页。
@@ -19,6 +20,22 @@ import com.zhangyt.module.login.viewmodel.LoginViewModel
  * RouterManager.start(RouterPath.Login.ACTIVITY_LOGIN)
  * ```
  */
+/**
+ * [AndroidEntryPoint] —— Hilt 的 Android 框架类接入点。
+ *
+ *   凡是 Activity / Fragment / Service / BroadcastReceiver 想参与 Hilt 依赖注入
+ *   （即内部出现 `@Inject` 字段、或通过 `by viewModels()` 拿 @HiltViewModel），
+ *   都必须打上这个注解。
+ *
+ *   它做了什么：
+ *   - 生成一个 `Hilt_LoginActivity` 父类，在 `onCreate` 之前把依赖注入完成
+ *   - 为 `by viewModels()` 设置 HiltViewModelFactory，让 LoginViewModel 能被
+ *     Hilt 按构造参数注入（而不是回退到无参构造）
+ *
+ *   注意：本 Activity 没有直接 `@Inject` 字段，但用了 `by viewModels()`，
+ *   所以仍然必须加这个注解。
+ */
+@AndroidEntryPoint
 @Route(path = RouterPath.Login.ACTIVITY_LOGIN)
 class LoginActivity : BaseActivity<LoginActivityLoginBinding>() {
 

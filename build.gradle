@@ -2,76 +2,27 @@
 apply from: "config.gradle"
 
 buildscript {
-    ext.kotlin_version = "1.6.10"
+    ext.kotlin_version = "1.9.22"
+    ext.ksp_version    = "1.9.22-1.0.17"
+    ext.hilt_version   = "2.51.1"
 
     repositories {
         google()
         mavenCentral()
-        maven {
-            allowInsecureProtocol = true
-            url 'https://repo.e-iceblue.com/nexus/content/groups/public/'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/public'
-        }
-        maven {
-            allowInsecureProtocol = true
-            url 'http://maven.aliyun.com/nexus/content/groups/public/'
-        }
-
-        maven{
-            allowInsecureProtocol = true
-            url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
-        }
-        maven{
-            allowInsecureProtocol = true
-            url 'https://repo1.maven.org/maven2/'
-        }
-        maven {
-            allowInsecureProtocol = true
-            url "https://mirrors.tencent.com/repository/maven/tencent_public"
-        }
-        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        gradlePluginPortal()
     }
+
     dependencies {
-        classpath "com.android.tools.build:gradle:7.1.2"
+        classpath "com.android.tools.build:gradle:8.2.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // ARouter 注解处理器
-        // 不需要额外 classpath，使用 kapt 即可
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$ksp_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        // ARouter 注解处理器仍走 kapt（ARouter 尚未支持 ksp）
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            allowInsecureProtocol = true
-            url 'https://repo.e-iceblue.com/nexus/content/groups/public/'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/public'
-        }
-        maven {
-            allowInsecureProtocol = true
-            url 'http://maven.aliyun.com/nexus/content/groups/public/'
-        }
-
-        maven{
-            allowInsecureProtocol = true
-            url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
-        }
-        maven{
-            allowInsecureProtocol = true
-            url 'https://repo1.maven.org/maven2/'
-        }
-        maven {
-            allowInsecureProtocol = true
-            url "https://mirrors.tencent.com/repository/maven/tencent_public"
-        }
-        maven { url "https://jitpack.io" }
-    }
-}
+// 仓库声明集中到 settings.gradle 的 dependencyResolutionManagement。
 
 task clean(type: Delete) {
     delete rootProject.buildDir

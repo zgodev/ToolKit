@@ -2,22 +2,18 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    namespace 'com.zhangyt.common'
+    compileSdk rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-
-        // ARouter 注解处理器参数：每个 module 必须设置 AROUTER_MODULE_NAME
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [AROUTER_MODULE_NAME: project.getName()]
-            }
-        }
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -28,17 +24,29 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         viewBinding true
         dataBinding true
+        buildConfig true
     }
     resourcePrefix "common_"   // 资源前缀避免冲突
+}
+
+// ARouter：kapt DSL + 全局 JavaCompile 两层兜底（Hilt 的 hiltJavaCompile task 需要后者）
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.name)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AAROUTER_MODULE_NAME=${project.name}")
 }
 
 dependencies {
@@ -51,6 +59,7 @@ dependencies {
     api rootProject.ext.dependencies["fragment-ktx"]
     api rootProject.ext.dependencies["viewpager2"]
     api rootProject.ext.dependencies["multidex"]
+    api rootProject.ext.dependencies["activity-ktx"]
 
     // Lifecycle
     api rootProject.ext.dependencies["lifecycle-viewmodel"]
@@ -65,9 +74,9 @@ dependencies {
     api rootProject.ext.dependencies["arouter-api"]
     kapt rootProject.ext.dependencies["arouter-compiler"]
 
-    // Glide
+    // Glide（4.16 起官方 ksp 支持）
     api rootProject.ext.dependencies["glide"]
-    kapt rootProject.ext.dependencies["glide-compiler"]
+    ksp rootProject.ext.dependencies["glide-compiler"]
 
     // 工具库
     api rootProject.ext.dependencies["utilcode"]
@@ -84,6 +93,10 @@ dependencies {
 
     api rootProject.ext.dependencies["worker"]
     api rootProject.ext.dependencies["xlog"]
+
+    // Hilt（api 让业务模块直接使用 @Inject / @HiltViewModel）
+    api rootProject.ext.dependencies["hilt"]
+    ksp rootProject.ext.dependencies["hilt-compiler"]
 
     // 依赖其他基础模块
     api project(path: ':utils')
