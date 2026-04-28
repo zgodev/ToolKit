@@ -25,8 +25,6 @@ class MainActivity : BaseActivity<HomeActivityMainBinding>() {
     }
     private var currentIndex = 0
 
-    override fun getViewBinding() = HomeActivityMainBinding.inflate(layoutInflater)
-
     override fun initView() {
         // 添加所有 Fragment
         val tx = supportFragmentManager.beginTransaction()

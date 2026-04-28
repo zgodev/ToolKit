@@ -11,11 +11,12 @@ import com.alibaba.android.arouter.launcher.ARouter
 /**
  * 所有 Fragment 的基类。
  *
+ * 泛型 [VB] 为 ViewBinding 类型，子类只需声明 `BaseFragment<XxxBinding>` 即可，
+ * 基类通过反射调用 `XxxBinding.inflate(...)` 自动创建 binding。
+ *
  * 使用示例：
  * ```
  * class HomeFragment : BaseFragment<FragmentHomeBinding>() {
- *     override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
- *         FragmentHomeBinding.inflate(inflater, container, false)
  *     override fun initView() { ... }
  * }
  * ```
@@ -33,7 +34,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = getViewBinding(inflater, container)
+        _binding = inflateFragmentBinding(javaClass, inflater, container)
         return binding.root
     }
 
@@ -54,7 +55,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         else
             ARouter.getInstance().build(path).navigation()
     }
-    protected abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     protected open fun initView() {}
     protected open fun initData() {}
     protected open fun observeViewModel() {}

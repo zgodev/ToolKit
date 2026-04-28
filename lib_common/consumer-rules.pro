@@ -65,6 +65,13 @@
 -dontwarn com.elvishew.xlog.**
 
 ########################################
+# ViewBinding（BaseActivity / BaseFragment 反射调用 inflate）
+########################################
+-keepclassmembers class * implements androidx.viewbinding.ViewBinding {
+    public static *** inflate(...);
+}
+
+########################################
 # AutoSize
 ########################################
 -keep class me.jessyan.autosize.** { *; }

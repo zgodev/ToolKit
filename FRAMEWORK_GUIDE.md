@@ -44,7 +44,7 @@ app
 class SettingsActivity : BaseActivity<MineActivitySettingsBinding>() {
     private val viewModel: SettingsViewModel by viewModels()
 
-    override fun getViewBinding() = MineActivitySettingsBinding.inflate(layoutInflater)
+    // 无需重写 getViewBinding：BaseActivity 通过泛型 + 反射自动 inflate
 
     override fun initView()   { binding.btnSave.click { viewModel.save() } }
     override fun initData()   { viewModel.loadUser() }

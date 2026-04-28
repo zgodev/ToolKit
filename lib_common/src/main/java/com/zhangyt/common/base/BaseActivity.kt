@@ -13,14 +13,13 @@ import me.jessyan.autosize.internal.CustomAdapt
 /**
  * 所有 Activity 的基类（MVVM / MVI 通用）。
  *
- * 泛型 [VB] 为 ViewBinding 类型。子类通过 [getViewBinding] 提供绑定实例。
+ * 泛型 [VB] 为 ViewBinding 类型，子类只需声明 `BaseActivity<XxxBinding>` 即可，
+ * 基类通过反射调用 `XxxBinding.inflate(LayoutInflater)` 自动创建 binding。
  *
  * 使用示例（MVVM）：
  * ```
  * class LoginActivity : BaseActivity<ActivityLoginBinding>() {
  *     private val viewModel: LoginViewModel by viewModels()
- *
- *     override fun getViewBinding() = ActivityLoginBinding.inflate(layoutInflater)
  *
  *     override fun initView() { ... }
  *     override fun initData() { ... }
@@ -43,7 +42,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         // 注入 ARouter 参数（若 Activity 声明了 @Autowired）
         ARouter.getInstance().inject(this)
 
-        binding = getViewBinding()
+        binding = inflateActivityBinding(javaClass, layoutInflater)
         setContentView(binding.root)
 
         initView()
@@ -68,9 +67,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         }
         super.onDestroy()
     }
-
-    /** 提供 ViewBinding 实例。 */
-    protected abstract fun getViewBinding(): VB
 
     /** 初始化 View。 */
     protected open fun initView() {}

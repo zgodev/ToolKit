@@ -41,8 +41,6 @@ class LoginActivity : BaseActivity<LoginActivityLoginBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()
 
-    override fun getViewBinding() = LoginActivityLoginBinding.inflate(layoutInflater)
-
     /**
      * 登录页不使用 AutoSize 的"按宽度等比放大"。
      * 返回 0 告诉 AutoSize 放弃对本页面的适配，使用系统原始 density。

@@ -68,8 +68,6 @@ class OtaActivity : BaseActivity<TestActivityOtaBinding>() {
         }
     }
 
-    override fun getViewBinding() = TestActivityOtaBinding.inflate(layoutInflater)
-
     override fun initView() {
         otaManager = OtaManager(this)
 

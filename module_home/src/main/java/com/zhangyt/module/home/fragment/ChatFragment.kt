@@ -1,7 +1,5 @@
 package com.zhangyt.module.home.fragment
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zhangyt.common.base.BaseFragment
@@ -17,9 +15,6 @@ class ChatFragment : BaseFragment<HomeFragmentChatBinding>() {
 
     private val viewModel: ChatViewModel by viewModels()
     private val adapter = ChatListAdapter()
-
-    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
-        HomeFragmentChatBinding.inflate(inflater, container, false)
 
     override fun initView() {
         binding.titleBar.setTitle("微信")
