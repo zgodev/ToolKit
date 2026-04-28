@@ -15,10 +15,17 @@ import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy
 import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator
 import com.tencent.mmkv.MMKV
+import android.os.Handler
+import android.os.Looper
+import com.tencent.smtt.export.external.TbsCoreSettings
+import com.tencent.smtt.sdk.QbSdk
 import com.zhangyt.common.language.LanguageManager
 import com.zhangyt.common.theme.ThemeManager
 import com.zhangyt.common.utils.AppManager
 import com.zhangyt.common.utils.AppStartup
+import com.zhangyt.common.web.WebEngine
+import com.zhangyt.common.web.WebEngineConfig
+import com.zhangyt.common.web.WebViewPool
 import java.io.File
 
 /**
@@ -79,8 +86,48 @@ open class CommonApplication : Application() {
 
         // ----- 后台并行（非关键路径） -----
         AppStartup.asyncInit("xlog") { initXLog() }
+        // WebViewPool：保存引用，原生预热延到首帧后（避免阻塞冷启动）
+        WebViewPool.init(this)
+        Handler(Looper.getMainLooper()).post {
+            WebViewPool.onEngineReady(WebEngine.NATIVE)
+        }
 
-        // TODO: 其他业务级 SDK（Bugly / 埋点 / 推送 等）也走 AppStartup.asyncInit 注入
+        // TBS X5：异步初始化，成功后再预热 X5 池
+        AppStartup.asyncInit("tbs") { initTBS() }
+    }
+
+    /**
+     * 初始化腾讯 TBS X5 内核。
+     *
+     * - 多线程初始化以加速首次启动
+     * - 初始化成功后标记 [WebEngineConfig.isX5Initialized]
+     * - 如果 X5 初始化失败，[WebEngineConfig.resolveEngine] 会自动降级到 NATIVE
+     */
+    private fun initTBS() {
+        // 开启多线程优化，加速 X5 内核初始化
+        val settings = mapOf(
+            TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER to true,
+            TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE to true,
+        )
+        QbSdk.initTbsSettings(settings)
+
+        // 预初始化 X5 内核
+        QbSdk.initX5Environment(this, object : QbSdk.PreInitCallback {
+            override fun onCoreInitFinished() {
+                // X5 内核初始化完成
+            }
+
+            override fun onViewInitFinished(isX5Core: Boolean) {
+                // isX5Core: true 表示 X5 内核加载成功
+                WebEngineConfig.isX5Initialized = isX5Core
+                if (isX5Core) {
+                    // 回调线程不确定，必须切主线程创建 WebView
+                    Handler(Looper.getMainLooper()).post {
+                        WebViewPool.onEngineReady(WebEngine.X5)
+                    }
+                }
+            }
+        })
     }
 
     /**

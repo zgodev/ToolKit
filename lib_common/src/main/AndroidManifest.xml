@@ -5,19 +5,23 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application>
+        <activity
+            android:name=".web.WebActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="design_width_in_dp"
-            android:value="360"/>
+            android:value="360" />
         <meta-data
             android:name="design_height_in_dp"
-            android:value="640"/>
-        <activity
-            android:name="com.zhangyt.common.ota.OtaActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:value="640" />
 
-        <!-- FileProvider：用于 Android 7.0+ 安装 APK -->
+        <activity
+            android:name=".ota.OtaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" /> <!-- FileProvider：用于 Android 7.0+ 安装 APK -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -28,4 +32,5 @@
                 android:resource="@xml/test_file_paths" />
         </provider>
     </application>
+
 </manifest>

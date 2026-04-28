@@ -58,6 +58,7 @@ ext {
             worker_version           : "2.7.1",
             xlog_version             : "1.11.1",  // 日志框架
             hilt_version             : "2.51.1",
+            tbs_version              : "44286",    // 腾讯 TBS X5 内核
     ]
 
     /* ---------- 统一依赖 ---------- */
@@ -117,5 +118,8 @@ ext {
             // --- Hilt ---
             "hilt"          : "com.google.dagger:hilt-android:${version.hilt_version}",
             "hilt-compiler" : "com.google.dagger:hilt-android-compiler:${version.hilt_version}",
+
+            // --- TBS X5 WebView ---
+            "tbs"           : "com.tencent.tbs:tbssdk:${version.tbs_version}",
     ]
 }
