@@ -1,0 +1,4 @@
+-keep class com.zhangyt.module.login.api.** { *; }
+-keep class com.zhangyt.module.login.repository.** { *; }
+-keep class com.zhangyt.module.login.viewmodel.** { *; }
+-keep class com.zhangyt.module.login.LoginActivity { *; }

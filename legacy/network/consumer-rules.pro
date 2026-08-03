@@ -1,0 +1,4 @@
+-keep class com.zhangyt.network.websocket.** { *; }
+-dontwarn com.zhangyt.network.websocket.**
+-keep class org.java_websocket.** { *; }
+-dontwarn org.java_websocket.**

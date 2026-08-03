@@ -64,6 +64,16 @@ case "`uname`" in
     ;;
 esac
 
+# On macOS, prefer an installed JDK 17 when JAVA_HOME is not explicitly set.
+# This keeps the wrapper aligned with AGP 8.2 and the project's Java toolchain.
+if $darwin && [ -z "$JAVA_HOME" ] && [ -x "/usr/libexec/java_home" ] ; then
+    TOOLKIT_JAVA_HOME="`/usr/libexec/java_home -v 17 2>/dev/null`"
+    if [ -n "$TOOLKIT_JAVA_HOME" ] ; then
+        JAVA_HOME="$TOOLKIT_JAVA_HOME"
+        export JAVA_HOME
+    fi
+fi
+
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
 # Determine the Java command to use to start the JVM.

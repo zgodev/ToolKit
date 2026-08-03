@@ -1,0 +1,17 @@
+plugins {
+    id 'toolkit.android.library'
+    id 'toolkit.android.hilt'
+}
+
+android {
+    namespace 'com.zhangyt.network'
+}
+
+dependencies {
+    api libs.retrofit.core
+    api libs.retrofit.gson
+    api libs.okhttp.core
+    api libs.gson
+    api libs.kotlinx.coroutines.core
+    implementation libs.okhttp.logging
+}

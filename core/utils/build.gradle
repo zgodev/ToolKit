@@ -1,0 +1,12 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.core.utils'
+}
+
+dependencies {
+    api libs.androidx.appcompat
+    api libs.androidx.core.ktx
+}

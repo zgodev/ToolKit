@@ -1,0 +1,19 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.core.startup'
+}
+
+dependencies {
+    api libs.androidx.multidex
+    implementation libs.arouter.api
+    implementation libs.utilcode
+    implementation libs.mmkv
+    implementation libs.xlog
+    implementation libs.kotlinx.coroutines.android
+    implementation project(':core:designsystem')
+    implementation project(':core:lifecycle')
+    implementation project(':core:locale')
+}

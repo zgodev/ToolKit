@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mine_theme_switch">Switch Theme</string>
+    <string name="mine_language_switch">Switch Language</string>
+    <string name="mine_logout">Logout</string>
+    <string name="mine_check_update">Check Update</string>
+</resources>

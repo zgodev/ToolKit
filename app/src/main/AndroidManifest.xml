@@ -18,6 +18,9 @@
 
         <!-- 启动页：判断登录态 -->
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Common_Theme_Blue">

@@ -1,0 +1,77 @@
+package com.zhangyt.module.login
+
+import androidx.activity.viewModels
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.zhangyt.common.base.BaseActivity
+import com.zhangyt.common.ext.click
+import com.zhangyt.common.ext.isMobile
+import com.zhangyt.common.ext.toast
+import com.zhangyt.common.router.RouterManager
+import com.zhangyt.module.home.api.HomeRoutes
+import com.zhangyt.module.login.api.LoginRoutes
+import com.zhangyt.module.login.databinding.LoginActivityLoginBinding
+import com.zhangyt.module.login.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+/**
+ * 登录页。
+ *
+ * 通过 ARouter 打开：
+ * ```
+ * RouterManager.start(LoginRoutes.ACTIVITY_LOGIN)
+ * ```
+ */
+/**
+ * [AndroidEntryPoint] —— Hilt 的 Android 框架类接入点。
+ *
+ *   凡是 Activity / Fragment / Service / BroadcastReceiver 想参与 Hilt 依赖注入
+ *   （即内部出现 `@Inject` 字段、或通过 `by viewModels()` 拿 @HiltViewModel），
+ *   都必须打上这个注解。
+ *
+ *   它做了什么：
+ *   - 生成一个 `Hilt_LoginActivity` 父类，在 `onCreate` 之前把依赖注入完成
+ *   - 为 `by viewModels()` 设置 HiltViewModelFactory，让 LoginViewModel 能被
+ *     Hilt 按构造参数注入（而不是回退到无参构造）
+ *
+ *   注意：本 Activity 没有直接 `@Inject` 字段，但用了 `by viewModels()`，
+ *   所以仍然必须加这个注解。
+ */
+@AndroidEntryPoint
+@Route(path = LoginRoutes.ACTIVITY_LOGIN)
+class LoginActivity : BaseActivity<LoginActivityLoginBinding>() {
+
+    private val viewModel: LoginViewModel by viewModels()
+
+    /**
+     * 登录页不使用 AutoSize 的"按宽度等比放大"。
+     * 返回 0 告诉 AutoSize 放弃对本页面的适配，使用系统原始 density。
+     * 配合 ScrollView + ConstraintLayout 的 maxWidth，在手机 / 平板都能正常显示。
+     */
+
+    override fun initView() {
+        binding.btnLogin.click { doLogin() }
+    }
+
+    override fun observeViewModel() {
+        viewModel.loadingState.observe(this) { loading ->
+            if (loading) showLoading("登录中...") else hideLoading()
+        }
+        viewModel.errorState.observe(this) { err -> toast(err) }
+        viewModel.loginResult.observe(this) {
+            toast("登录成功，欢迎 ${it.nickname}")
+            if (!BuildConfig.STANDALONE) {
+                RouterManager.start(HomeRoutes.ACTIVITY_MAIN)
+            }
+            finish()
+        }
+    }
+
+    private fun doLogin() {
+        val account = binding.etAccount.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
+        if (account.isEmpty()) { toast("请输入账号"); return }
+        if (!account.isMobile() && account.length < 4) { toast("账号格式不正确"); return }
+        if (password.isEmpty()) { toast("请输入密码"); return }
+        viewModel.login(account, password)
+    }
+}

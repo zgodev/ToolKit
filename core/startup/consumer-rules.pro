@@ -1,0 +1,4 @@
+-keep class com.tencent.mmkv.** { *; }
+-dontwarn com.tencent.mmkv.**
+-keep class com.elvishew.xlog.** { *; }
+-dontwarn com.elvishew.xlog.**

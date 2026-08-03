@@ -1,44 +1,60 @@
-模块结构
+# ToolKit
 
-ToolKit/
-├── app                   壳工程（Application、Splash）
-├── lib_common            基础库（BaseActivity/Fragment/VM、MVVM/MVI、Router、Theme、Language…）
-├── network               网络层（Retrofit + OkHttp + Coroutines/Flow）
-├── utils                 工具类（日期/键盘/状态栏/文件/Bitmap…）
-├── widget                自定义 View（TitleBar/LoadingDialog/NodeProgressBar…）
-├── module_login          登录业务（MVVM 示例）
-└── module_home           主页业务（类微信 4 Tab）
+ToolKit 是一个面向中大型 Android 项目的严格组件化骨架，采用 Kotlin、ViewBinding、Hilt、ARouter、Retrofit/OkHttp、Coroutines/Flow 和 MMKV。
 
-### 核心能力一览
+## 架构
 
-| 能力            | 实现位置                                            | 使用方式                                                 |
-| :-------------- | :-------------------------------------------------- | :------------------------------------------------------- |
-| **MVVM**        | `BaseActivity / BaseViewModel / BaseRepository`     | 继承 `BaseActivity<VB>()` + `launch { … }`               |
-| **MVI**         | `mvi/MviViewModel.kt`                               | 定义 `IUiState/IUiIntent/IUiEffect` → `dispatch(intent)` |
-| **组件化路由**  | `router/RouterPath, RouterManager` + ARouter        | `RouterManager.start(RouterPath.Login.ACTIVITY_LOGIN)`   |
-| **多主题**      | `theme/ThemeManager` + 5 套 `Common_Theme_*`        | `ThemeManager.switch(ThemeStyle.RED)`                    |
-| **多语言**      | `language/LanguageManager` + `values-en/ja`         | `LanguageManager.switch(ctx, Language.EN)`               |
-| **屏幕适配**    | AutoSize + `BaseActivity` 实现 `CustomAdapt`        | 默认 360dp 宽度基准，布局直接写 dp                       |
-| **网络层**      | `RetrofitClient + NetworkConfig + Interceptors`     | `RetrofitClient.create(Api::class.java)`                 |
-| **统一响应**    | `BaseResponse<T>` + `ApiException`                  | `BaseRepository.request { api.xxx() }` 自动解包          |
-| **Token 注入**  | `HeaderInterceptor` + `NetworkConfig.tokenProvider` | `App.onCreate` 里配置                                    |
-| **用户会话**    | `UserManager` + `MMKV`                              | `UserManager.isLogin() / saveUser() / logout()`          |
-| **图片加载**    | `ext/ViewExt.load / loadCircle`                     | `iv.load(url, placeholder = …)`                          |
-| **扩展函数**    | `ext/CommonExt, ViewExt, FlowExt`                   | `view.click { } / toast() / 16.dp / "...".isMobile()`    |
-| **Activity 栈** | `AppManager`                                        | `AppManager.exitApp() / recreateAll()`                   |
-| **Loading**     | `LoadingDialog` 内置于 `BaseActivity`               | `showLoading() / hideLoading()`                          |
+```text
+app                         应用组装、启动与主导航
+├── module_login:api/impl   登录契约与实现
+├── module_home:api/impl    首页契约与实现
+├── module_mine:api/impl    我的契约与实现
+└── module_ota:api/impl     OTA 契约与实现
 
-### 运行流程
-`SplashActivity` → 未登录 → `LoginActivity`（账号任意≥4位 + 密码任意≥6位即可登录）→ `MainActivity`（微信风格 4 Tab：微信/通讯录/发现/我的）
+core:model                  纯 Kotlin 模型
+core:ui                     Activity/Fragment/ViewModel/MVI 基类与扩展
+core:designsystem           主题、通用资源、自定义 View、Loading
+core:navigation             ARouter 封装与通用路由
+core:network                Retrofit/OkHttp、响应与 Repository
+core:session                用户与会话事件
+core:locale                 多语言
+core:lifecycle              Activity 栈
+core:startup                通用 Application 与启动任务
+core:web                    WebView/TBS（由应用显式初始化）
+core:utils                  可复用的现代工具
+legacy:network              旧 WebSocket/HTTP Java 实现
+legacy:utils                尚未现代化的历史工具与本地库
+build-logic                 Gradle 约定插件
+```
 
-在 **「我的」** Tab 可以直接体验：
+边界规则：core 不依赖业务；feature 之间只依赖对方 api；只有 app 或 standalone 组装层可以聚合 impl。
 
-- 主题切换（蓝 / 红 / 绿 / 紫 / 暗夜，秒切无重启）
-- 语言切换（简中 / English / 日本語）
-- 退出登录
+## 构建
 
-### 重要文件
+项目固定使用 JDK 17，依赖版本统一在 `gradle/libs.versions.toml`。
 
-- `FRAMEWORK_GUIDE.md` — 完整的框架使用指南，涵盖新建页面、MVI 示例、网络请求、主题/多语言切换、所有工具类速查等
-- `config.gradle` — 统一依赖版本管理（新增模块只需引用）
-- `settings.gradle` — 模块注册入口（后续加业务模块只需追加一行）
+```bash
+./gradlew :app:assembleDebug
+./gradlew testDebugUnitTest
+```
+
+首次在线构建下载完依赖后，可加 `--offline` 验证缓存可复现性。
+
+## 独立组件 APK
+
+`-Pstandalone=<feature>` 会把对应 `impl` 切换为 Application，使用独立 Manifest、Application/Launcher 和 applicationId：
+
+```bash
+./gradlew :module_login:impl:assembleDebug -Pstandalone=login
+./gradlew :module_home:impl:assembleDebug -Pstandalone=home
+./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine
+./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota
+```
+
+支持值仅为 `login/home/mine/ota`，未知值会在配置阶段失败。`mine` 独立包按业务需要同时组装 OTA 实现。
+
+## 运行流程
+
+主应用：`SplashActivity` → 登录态判断 → `LoginActivity` → `MainActivity`。演示登录接受至少 4 位账号和至少 6 位密码；“我的”页面提供主题、语言、OTA 与退出登录示例。
+
+详细开发规则见 [FRAMEWORK_GUIDE.md](FRAMEWORK_GUIDE.md)，AI 协作规则见 [AGENTS.md](AGENTS.md)。

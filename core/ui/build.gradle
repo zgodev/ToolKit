@@ -1,0 +1,23 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.core.ui'
+}
+
+dependencies {
+    api libs.androidx.appcompat
+    api libs.androidx.core.ktx
+    api libs.androidx.fragment.ktx
+    api libs.androidx.lifecycle.viewmodel
+    api libs.androidx.lifecycle.livedata
+    api libs.androidx.lifecycle.runtime
+    api libs.kotlinx.coroutines.core
+    api libs.kotlinx.coroutines.android
+    implementation libs.arouter.api
+    implementation libs.autosize
+    implementation libs.glide
+    implementation libs.utilcode
+    implementation project(':core:designsystem')
+}

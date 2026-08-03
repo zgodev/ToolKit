@@ -1,29 +1,3 @@
-// Top-level build file. 通用配置集中在 config.gradle
-apply from: "config.gradle"
-
-buildscript {
-    ext.kotlin_version = "1.9.22"
-    ext.ksp_version    = "1.9.22-1.0.17"
-    ext.hilt_version   = "2.51.1"
-
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath "com.android.tools.build:gradle:8.2.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$ksp_version"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        // ARouter 注解处理器仍走 kapt（ARouter 尚未支持 ksp）
-    }
-}
-
-// 仓库声明集中到 settings.gradle 的 dependencyResolutionManagement。
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

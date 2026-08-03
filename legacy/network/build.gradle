@@ -1,0 +1,14 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.legacy.network'
+}
+
+dependencies {
+    api libs.okhttp.core
+    api libs.gson
+    api libs.java.websocket
+    implementation project(':legacy:utils')
+}

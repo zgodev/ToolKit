@@ -1,0 +1,6 @@
+-keep class jxl.** { *; }
+-dontwarn jxl.**
+-dontwarn org.apache.log4j.**
+-dontwarn com.sun.**
+-dontwarn com.guo.android_extend.**
+-keep class com.guo.android_extend.** { *; }

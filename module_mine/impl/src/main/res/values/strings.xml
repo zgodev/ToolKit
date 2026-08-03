@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mine_theme_switch">切换主题</string>
+    <string name="mine_language_switch">切换语言</string>
+    <string name="mine_logout">退出登录</string>
+    <string name="mine_check_update">检测更新</string>
+</resources>

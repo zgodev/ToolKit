@@ -3,6 +3,7 @@ package com.zhangyt.toolkit
 import com.zhangyt.common.CommonApplication
 import com.zhangyt.common.user.SessionEvents
 import com.zhangyt.common.user.UserManager
+import com.zhangyt.common.web.WebInitializer
 import com.zhangyt.network.config.NetworkConfig
 import dagger.hilt.android.HiltAndroidApp
 import java.io.File
@@ -41,6 +42,8 @@ class App : CommonApplication() {
             UserManager.logout()
             SessionEvents.emitLogout()
         }
+
+        WebInitializer.initialize(this)
 
         // TODO: 其他三方 SDK 初始化，如友盟、Bugly、Crashlytics 等
     }

@@ -1,0 +1,12 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.core.locale'
+}
+
+dependencies {
+    implementation libs.mmkv
+    implementation project(':core:lifecycle')
+}

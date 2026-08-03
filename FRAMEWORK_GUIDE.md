@@ -1,304 +1,96 @@
-# ToolKit 组件化项目框架指南
+# ToolKit 组件化开发指南
 
-一套面向大型 Android 项目的组件化基础框架。默认已集成：
-**组件化 (ARouter) + MVVM/MVI + Retrofit/Flow + Glide + MMKV + 屏幕适配 + 多语言 + 多主题**。
+## 1. 依赖方向
 
-> Android: minSdk 21 / compileSdk 31 / Kotlin 1.6.10 / Gradle 7.1.2
+```text
+app ───────────────► feature impl ─► own api
+ │                       │          other feature api
+ │                       └────────► core
+ └───────────────────────────────► core
 
----
-
-## 1. 模块结构
-
-```
-ToolKit/
-├── app                   应用壳工程（Application、Splash，不写业务）
-├── lib_common            基础库：BaseActivity/Fragment/ViewModel、MVI、路由、主题、多语言
-├── network               网络层：Retrofit + OkHttp + Coroutines
-├── utils                 工具类：文件、Bitmap、日期、状态栏…
-├── widget                自定义 View：TitleBar、LoadingDialog、NodeProgressBar…
-├── module_login          业务模块：登录
-└── module_home           业务模块：主页（微信风格 4 Tab）
+legacy ─► 所需三方库或其他 legacy/core
+core    -X-► feature
+feature -X-► other feature impl
 ```
 
-**依赖关系：**
-```
-app
- ├── module_login ──┐
- └── module_home ───┴──► lib_common ──► network / utils / widget
-```
+`app` 负责跨业务编排；业务页面不能通过类引用跨 feature，统一使用各 `module_xxx:api` 中的路由或接口契约。
 
-**新增业务模块步骤：**
-1. `settings.gradle` 追加 `include ':module_xxx'`
-2. 复制 `module_login/build.gradle` 修改包名
-3. `api project(path: ':lib_common')`
-4. 在 `lib_common/router/RouterPath.kt` 注册路由
-5. `app/build.gradle` 中 `implementation project(path: ':module_xxx')`
+## 2. 新增业务模块
 
----
+以 `module_order` 为例：
 
-## 2. 快速上手
+1. 创建 `module_order/api` 与 `module_order/impl`，在 `settings.gradle` 注册两个项目。
+2. api 使用 `toolkit.android.library`，只放 `OrderRoutes`、跨模块接口和必要的稳定模型。
+3. impl 使用 `toolkit.android.feature`；有路由时加 `toolkit.android.arouter`，有注入时加 `toolkit.android.hilt`。
+4. impl 依赖自身 api、所需 core 和其他 feature api，不依赖其他 impl。
+5. 在 `app` 中同时依赖 api/impl 完成集成。
+6. 若需独立 APK，在 `AndroidFeatureConventionPlugin` 的支持列表中注册，并提供 `src/standalone/AndroidManifest.xml` 与独立 Launcher/Application。
+7. 补路由契约测试、模块单测和 app/standalone 构建验证。
 
-### 2.1 新建一个页面（MVVM）
-```kotlin
-@Route(path = RouterPath.Mine.ACTIVITY_SETTINGS)
-class SettingsActivity : BaseActivity<MineActivitySettingsBinding>() {
-    private val viewModel: SettingsViewModel by viewModels()
+## 3. 路由
 
-    // 无需重写 getViewBinding：BaseActivity 通过泛型 + 反射自动 inflate
-
-    override fun initView()   { binding.btnSave.click { viewModel.save() } }
-    override fun initData()   { viewModel.loadUser() }
-    override fun observeViewModel() {
-        viewModel.user.observe(this) { binding.tvNickname.text = it.nickname }
-        viewModel.loadState.observe(this) {
-            when (it) {
-                is UiLoadState.Loading -> showLoading()
-                is UiLoadState.Success -> hideLoading()
-                is UiLoadState.Error   -> { hideLoading(); toast(it.message) }
-                else -> {}
-            }
-        }
-    }
-}
-```
-
-### 2.2 路由跳转
-```kotlin
-// 简单跳转
-RouterManager.start(RouterPath.Login.ACTIVITY_LOGIN)
-
-// 带参数
-RouterManager.start(RouterPath.Common.ACTIVITY_WEB) {
-    withString("url", "https://www.baidu.com")
-    withString("title", "百度")
-}
-
-// 获取 Fragment
-val fragment = RouterManager.getFragment(RouterPath.Home.FRAGMENT_CHAT)
-```
-
-### 2.3 网络请求
-```kotlin
-// 1. 定义 API
-interface UserApi {
-    @GET("api/v1/user/info")
-    suspend fun getUserInfo(@Query("id") id: String): BaseResponse<UserInfo>
-}
-
-// 2. Repository 中调用（已自动处理 BaseResponse）
-class UserRepository : BaseRepository() {
-    private val api = RetrofitClient.create(UserApi::class.java)
-    fun getUserInfo(id: String): Flow<UserInfo> = request { api.getUserInfo(id) }
-}
-
-// 3. ViewModel 中订阅
-class UserViewModel : BaseViewModel() {
-    val userLiveData = MutableLiveData<UserInfo>()
-    fun load(id: String) = launch(showLoading = true) {
-        repo.getUserInfo(id).collect { userLiveData.value = it }
-    }
-}
-
-// 4. Activity 观察
-viewModel.userLiveData.observe(this) { render(it) }
-```
-
-### 2.4 MVI 写法
-```kotlin
-// ---- Contract ----
-data class LoginState(
-    val loading: Boolean = false,
-    val user: UserInfo? = null,
-    val error: String? = null
-) : IUiState
-
-sealed class LoginIntent : IUiIntent {
-    data class Submit(val account: String, val pwd: String) : LoginIntent()
-}
-
-sealed class LoginEffect : IUiEffect {
-    object NavigateHome : LoginEffect()
-}
-
-// ---- ViewModel ----
-class LoginMviVM : MviViewModel<LoginState, LoginIntent, LoginEffect>() {
-    override fun initialState() = LoginState()
-    override fun handleIntent(intent: LoginIntent) {
-        when (intent) {
-            is LoginIntent.Submit -> login(intent.account, intent.pwd)
-        }
-    }
-    private fun login(a: String, p: String) = viewModelScope.launch {
-        updateState { copy(loading = true) }
-        runCatching { LoginRepository().login(a, p).first() }
-            .onSuccess {
-                updateState { copy(loading = false, user = it) }
-                sendEffect(LoginEffect.NavigateHome)
-            }
-            .onFailure {
-                updateState { copy(loading = false, error = it.message) }
-            }
-    }
-}
-
-// ---- Activity ----
-lifecycleScope.launch { viewModel.uiState.collect { render(it) } }
-lifecycleScope.launch { viewModel.uiEffect.collect { handle(it) } }
-```
-
----
-
-## 3. 主题切换
+业务路径归所属 feature api：
 
 ```kotlin
-ThemeManager.switch(ThemeStyle.RED)     // 切换红色主题
-ThemeManager.switch(ThemeStyle.DARK)    // 切换暗夜模式
-```
-- 已内置 5 套主题：`BLUE / RED / GREEN / PURPLE / DARK`
-- 布局中使用 `?attr/common_color_primary` 等属性即可自动生效
-- 新增主题：
-  1. 在 `lib_common/values/colors.xml` 追加色值
-  2. 在 `lib_common/values/themes.xml` 新增 `<style name="Common_Theme_Xxx" parent="Common_Theme_Base">`
-  3. 在 `ThemeStyle` 枚举中追加
-
-**XML 引用规范**（推荐统一使用 attr，这样一处切换全局生效）：
-```xml
-<!-- 背景 -->
-android:background="?attr/common_color_bg"
-<!-- 主色 -->
-android:textColor="?attr/common_color_primary"
-<!-- 主标题 -->
-android:textColor="?attr/common_color_text_main"
-<!-- 副标题 -->
-android:textColor="?attr/common_color_text_sub"
-```
-
----
-
-## 4. 多语言切换
-
-```kotlin
-LanguageManager.switch(context, Language.EN)       // 英文
-LanguageManager.switch(context, Language.JA)       // 日语
-LanguageManager.switch(context, Language.SYSTEM)   // 跟随系统
-```
-- 新增语言：`values-xx/strings.xml` 并在 `Language` 枚举中追加
-- 运行时无需重启 App（内部自动 recreate 当前所有 Activity）
-- `app/build.gradle` 中 `resConfigs "zh", "en", "ja"` 控制打包的语言资源
-
----
-
-## 5. 屏幕适配
-
-使用 [AutoSize](https://github.com/JessYanCoding/AndroidAutoSize)。
-`BaseActivity` 已实现 `CustomAdapt`，默认以 **360dp 宽度** 为基准。
-如需按高度适配：
-```kotlin
-override fun isBaseOnWidth(): Boolean = false
-override fun getSizeInDp(): Float = 640f
-```
-布局中直接使用 `dp / sp` 即可，不需要写死 px。
-
----
-
-## 6. 常用扩展 / 工具
-
-| 功能 | 调用方式 |
-|-----|---------|
-| Toast | `toast("完成")` / `context.toast("…")` |
-| 防抖点击 | `view.click { … }` |
-| 显示隐藏 | `view.visible() / invisible() / gone()` |
-| 加载图片 | `imageView.load(url, placeholder = R.drawable.ic_default)` |
-| 圆形头像 | `imageView.loadCircle(url)` |
-| dp 转换 | `16.dp` 返回 Int 像素 |
-| 手机号校验 | `phone.isMobile()` |
-| 日期格式化 | `DateUtils.format(time, DateUtils.YMD)` |
-| 友好时间 | `DateUtils.friendlyTime(time)` // "3 分钟前" |
-| 键盘显示/隐藏 | `KeyboardUtils.hide(activity)` |
-| 状态栏设置 | `StatusBarUtils.setColor(this, Color.WHITE)` |
-| 文件读写 | `FileUtils.xxx` |
-| Bitmap 操作 | `BitmapUtil.xxx` |
-| 持久化 | `MMKV.defaultMMKV().encode("k", "v")` |
-| 用户 Token | `UserManager.getToken()` / `UserManager.logout()` |
-
----
-
-## 7. 网络层详解
-
-### 7.1 接口协议
-统一 `BaseResponse<T>`：
-```json
-{ "code": 0, "message": "ok", "data": { ... } }
-```
-`BaseRepository#request` 会自动解包：
-- `code == 0` ➜ 返回 `data`
-- 否则抛出 `ApiException(code, message)`
-
-### 7.2 配置
-`App.kt` 中：
-```kotlin
-NetworkConfig.baseUrl      = BuildConfig.BASE_URL
-NetworkConfig.debuggable   = BuildConfig.DEBUG
-NetworkConfig.tokenProvider = { UserManager.getToken() }
-NetworkConfig.commonHeaders = mapOf(
-    "Content-Type" to "application/json",
-    "App-Version"  to BuildConfig.VERSION_NAME
-)
-```
-
-### 7.3 多环境
-在 `app/build.gradle` 的 `buildTypes` 中：
-```groovy
-debug {
-    buildConfigField "String", "BASE_URL", "\"https://dev.api.example.com/\""
+object OrderRoutes {
+    const val ACTIVITY_DETAIL = "/order/activity_detail"
 }
-release {
-    buildConfigField "String", "BASE_URL", "\"https://api.example.com/\""
+
+@Route(path = OrderRoutes.ACTIVITY_DETAIL)
+class OrderDetailActivity : BaseActivity<OrderActivityDetailBinding>()
+
+RouterManager.start(OrderRoutes.ACTIVITY_DETAIL)
+```
+
+通用页面路径可放 `core:navigation`。ARouter 的处理器模块名由完整 Gradle path 生成，避免多个 `impl` 项目产生同名类。
+
+## 4. UI 与状态
+
+- 现有 XML 页面默认继续使用 XML + ViewBinding；新模块可按设计选择 XML 或 Compose。
+- XML 资源带模块前缀，并优先使用 `core:designsystem` 的主题属性。
+- Activity/Fragment 复用 `BaseActivity<VB>` / `BaseFragment<VB>`。
+- 简单页面使用 MVVM；复杂状态可复用 `MviViewModel` 契约。
+- Flow 在 UI 层按生命周期收集，协程使用 `viewModelScope` / `lifecycleScope`。
+
+## 5. 网络与会话
+
+```kotlin
+interface OrderApi {
+    @GET("orders/{id}")
+    suspend fun getOrder(@Path("id") id: String): BaseResponse<OrderDto>
+}
+
+class OrderRepository @Inject constructor(
+    private val api: OrderApi,
+) : BaseRepository() {
+    fun getOrder(id: String): Flow<OrderDto> = request { api.getOrder(id) }
 }
 ```
 
-### 7.4 Token 过期处理
-在 `HeaderInterceptor` 后新增一个 `TokenInterceptor` 检查 401 并触发强制登出 → 跳登录页。
+`BaseRepository.request` 将 `code == 0` 的非空 data 解包；业务错误保留后端 code/message，空成功体转换为 `ApiException`。Token、401 回调和缓存目录在应用 Application 中配置一次。
 
----
+## 6. 基础能力位置
 
-## 8. 运行示例
+- 主题/通用 View：`core:designsystem`
+- 多语言：`core:locale`
+- 用户会话：`core:session`
+- Web：`core:web`，需要的 Application 显式调用 `WebInitializer.initialize()`
+- 网络：`core:network`
+- 旧 HTTP/WebSocket：`legacy:network`
+- 旧工具和本地二进制：`legacy:utils`
 
-1. Android Studio 同步 Gradle（首次会下载 ARouter / MMKV / AutoSize）
-2. Run `app` 模块
-3. 启动流程：`SplashActivity` → 未登录跳 `LoginActivity` → 登录成功跳 `MainActivity`（底部 Tab）
-4. 在「我的」Tab 可以体验主题切换与多语言切换
-5. 账号：任意（手机号格式 / 至少 4 位），密码：任意 ≥ 6 位 即可登录（演示版本地假数据）
+新代码优先进入职责明确的 core 或 feature；不要恢复 `lib_common` 式的全量传递依赖。
 
----
+## 7. 验证基线
 
-## 9. 后续扩展建议
-
-| 方向 | 建议引入 |
-|-----|---------|
-| 数据库 | Room（已在 config.gradle 预留版本） |
-| 图片选择 | Matisse / PictureSelector |
-| 下拉刷新 | SmartRefreshLayout |
-| 权限 | easypermissions |
-| 崩溃上报 | Bugly / Firebase Crashlytics |
-| 埋点 | 封装 TrackManager，BaseActivity/Fragment 回调中调用 |
-| 启动优化 | AnchorTask / Alpha（有向图初始化） |
-| APK 瘦身 | resConfigs、混淆、资源压缩 |
-
----
-
-## 10. 目录速查
-
+```bash
+./gradlew testDebugUnitTest --offline
+./gradlew :app:assembleDebug --offline
+./gradlew :module_login:impl:assembleDebug -Pstandalone=login --offline
+./gradlew :module_home:impl:assembleDebug -Pstandalone=home --offline
+./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine --offline
+./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota --offline
+git diff --check
 ```
-lib_common/
-├── base/                 BaseActivity/Fragment/ViewModel/Repository
-├── mvi/                  MVI 契约 + ViewModel
-├── router/               RouterPath / RouterManager
-├── theme/                ThemeManager / ThemeStyle
-├── language/             LanguageManager / Language
-├── user/                 UserManager / UserInfo
-├── state/                UiLoadState
-├── ext/                  ViewExt / CommonExt / FlowExt
-├── utils/                AppManager
-└── widget/               LoadingDialog
-```
+
+单元测试覆盖可稳定验证的契约；OTA 安装权限、真实下载、WebView/TBS 和主题/语言视觉效果仍需设备验证。

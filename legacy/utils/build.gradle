@@ -1,0 +1,16 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.legacy.utils'
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    api libs.androidx.appcompat
+    api libs.androidx.core.ktx
+    api libs.gson
+    api libs.okhttp.core
+    api libs.jxl
+}

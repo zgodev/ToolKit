@@ -1,23 +1,24 @@
 /*
- * 组件化项目模块管理
- * ---------------------------------------------
- *  :app            应用壳工程（仅负责集成，本身不写业务）
- *  :lib_common     基础库：BaseActivity、MVVM/MVI、ARouter、主题、多语言、屏幕适配、扩展等
- *  :network        网络层：Retrofit + OkHttp + Coroutines/Flow
- *  :utils          工具类：文件、Bitmap、SP、日期、日志等
- *  :widget         自定义 View：对话框、TitleBar、LoadingLayout 等
- *  :module_login   业务模块：登录
- *  :module_home    业务模块：主页（类微信 Tab 架构）
- *  :module_mine    业务模块：我的
- * ---------------------------------------------
+ * 严格组件化结构：app 只负责组装，core/legacy 提供基础能力，
+ * 每个业务 feature 由 api（公开契约）和 impl（具体实现）组成。
  */
 pluginManagement {
+    includeBuild('build-logic')
+
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/public' }
     }
+}
+
+if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17) ||
+        JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_18)) {
+    throw new GradleException(
+            "ToolKit requires JDK 17, but Gradle is running on ${JavaVersion.current()}. " +
+                    "Set JAVA_HOME to a JDK 17 installation and retry."
+    )
 }
 
 dependencyResolutionManagement {
@@ -39,10 +40,24 @@ dependencyResolutionManagement {
 rootProject.name = "ToolKit"
 
 include ':app'
-include ':lib_common'
-include ':network'
-include ':utils'
-include ':widget'
-include ':module_login'
-include ':module_home'
-include ':module_mine'
+include ':core:model'
+include ':core:lifecycle'
+include ':core:designsystem'
+include ':core:ui'
+include ':core:navigation'
+include ':core:session'
+include ':core:locale'
+include ':core:startup'
+include ':core:web'
+include ':core:network'
+include ':core:utils'
+include ':legacy:utils'
+include ':legacy:network'
+include ':module_login:api'
+include ':module_login:impl'
+include ':module_home:api'
+include ':module_home:impl'
+include ':module_mine:api'
+include ':module_mine:impl'
+include ':module_ota:api'
+include ':module_ota:impl'

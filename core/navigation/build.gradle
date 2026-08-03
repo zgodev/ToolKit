@@ -1,0 +1,12 @@
+plugins {
+    id 'toolkit.android.library'
+}
+
+android {
+    namespace 'com.zhangyt.core.navigation'
+}
+
+dependencies {
+    api libs.arouter.api
+    api libs.androidx.fragment.ktx
+}
