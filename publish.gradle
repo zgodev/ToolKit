@@ -1,0 +1,72 @@
+/**
+ * 自定义仓库配置，如某个模块需要上传到仓库：只需增加配置：apply from: "../publish.gradle"
+ * local_repo_url 和Token需要配置自己的仓库地址和Token
+ */
+
+apply plugin: 'maven-publish'
+
+// 名称
+def pom_artifact_id = project.getName()
+// 分组
+def group_id = "com.turing.engine"
+// 本地仓库 也可以设置在线maven仓库
+//def local_repo_url = "file:///C:/localMaven"
+def local_repo_url = "https://gitlab-v16.turingapi.com/api/v4/projects/68/packages/maven"
+//def local_repo_url = "https://packages.aliyun.com/maven/repository/2457158-snapshot-ublUpS/"
+// 版本号
+def version_name = project.getVersion()
+
+afterEvaluate {
+    publishing {
+        publications {
+            // pushlish任务名字 TestLib
+            // 可以配置多个任务 这里配置了一个
+            TestLib(MavenPublication) {
+                groupId = group_id
+                artifactId = pom_artifact_id
+                version = version_name
+
+                artifact("$buildDir/outputs/aar/${pom_artifact_id}-release.aar")
+
+                pom {
+                    withXml {
+                        def dependenciesNode = asNode().appendNode("dependencies")
+                        configurations.implementation.allDependencies.forEach() {
+                            Dependency dependency ->
+                                if (dependency.version != "unspecified" && dependency.name != "unspecified") {
+                                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                                    dependencyNode.appendNode('groupId', dependency.group)
+                                    dependencyNode.appendNode('artifactId', dependency.name)
+                                    dependencyNode.appendNode('version', dependency.version)
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        repositories {
+            maven {
+                //name: "Maven"
+                url local_repo_url
+                //开发包项目的TOKEN，有效期2025/05/08，超时后需重新生成token
+                credentials(HttpHeaderCredentials) {
+                    name = "Private-Token"
+                    value = "你的TOKEN"
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
+            }
+        }
+    }
+}
+
+// 推送到配置的maven仓库
+// publish`TestLib`PublicationTo`Maven`Repository
+// TestLib 对应publish任务的名字
+// Maven 对象仓库的name 如果配置了一个仓库 没有没配置名字 使用Maven 即可 如果配置了name   这里需要使用name
+task publishLibToRepo(dependsOn: ['build', 'publishTestLibPublicationToMavenRepository']) {
+    group = group_id
+}
