@@ -7,7 +7,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.zhangyt.common.base.BaseActivity
 import com.zhangyt.common.router.RouterPath
 import com.zhangyt.core.web.R
-import com.zhangyt.core.web.databinding.ActivityWebBinding
+import com.zhangyt.core.web.databinding.WebActivityBinding
 
 /**
  * WebView 封装，支持原生 WebView 和 TBS X5 双引擎。
@@ -35,7 +35,7 @@ import com.zhangyt.core.web.databinding.ActivityWebBinding
  * 独立进程：将 WebView 放到独立进程，防止 Crash 影响主进程，也便于内存回收。代价是 IPC 通信成本。
  */
 @Route(path = RouterPath.Common.ACTIVITY_WEB)
-class WebActivity : BaseActivity<ActivityWebBinding>() {
+class WebActivity : BaseActivity<WebActivityBinding>() {
 
     private var webViewWrapper: WebViewWrapper? = null
     private lateinit var container: FrameLayout

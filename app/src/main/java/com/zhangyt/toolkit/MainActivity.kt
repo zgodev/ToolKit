@@ -6,7 +6,7 @@ import com.zhangyt.common.base.BaseActivity
 import com.zhangyt.common.router.RouterManager
 import com.zhangyt.module.home.api.HomeRoutes
 import com.zhangyt.module.mine.api.MineRoutes
-import com.zhangyt.toolkit.databinding.HomeActivityMainBinding
+import com.zhangyt.toolkit.databinding.AppActivityMainBinding
 
 /**
  * 类微信主页：底部 4 Tab + 4 Fragment。
@@ -16,7 +16,7 @@ import com.zhangyt.toolkit.databinding.HomeActivityMainBinding
  * - 底部 BottomNavigationView 控制切换。
  */
 @Route(path = HomeRoutes.ACTIVITY_MAIN)
-class MainActivity : BaseActivity<HomeActivityMainBinding>() {
+class MainActivity : BaseActivity<AppActivityMainBinding>() {
 
     private val fragments: List<Fragment> by lazy {
         listOf(

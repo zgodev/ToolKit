@@ -15,7 +15,7 @@ import androidx.work.WorkInfo
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.zhangyt.common.base.BaseActivity
 import com.zhangyt.module.ota.api.OtaRoutes
-import com.zhangyt.module.ota.databinding.TestActivityOtaBinding
+import com.zhangyt.module.ota.databinding.OtaActivityUpdateBinding
 
 /**
  * OTA 升级页面
@@ -27,7 +27,7 @@ import com.zhangyt.module.ota.databinding.TestActivityOtaBinding
  * 4. 下载完成后自动安装
  */
 @Route(path = OtaRoutes.ACTIVITY_OTA)
-class OtaActivity : BaseActivity<TestActivityOtaBinding>() {
+class OtaActivity : BaseActivity<OtaActivityUpdateBinding>() {
 
     private lateinit var otaManager: OtaManager
 

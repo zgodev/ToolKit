@@ -1,3 +1,7 @@
+plugins {
+    id 'toolkit.architecture-guard'
+}
+
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
