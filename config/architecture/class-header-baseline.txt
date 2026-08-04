@@ -119,9 +119,4 @@ module_login/src/main/java/com/zhangyt/module/login/di/LoginModule.kt#classHeade
 module_login/src/main/java/com/zhangyt/module/login/repository/LoginRepository.kt#classHeader:LoginRepository
 module_login/src/main/java/com/zhangyt/module/login/viewmodel/LoginViewModel.kt#classHeader:LoginViewModel
 module_login/src/standalone/java/com/zhangyt/module/login/standalone/LoginStandaloneApplication.kt#classHeader:LoginStandaloneApplication
-module_mine/src/main/java/com/zhangyt/module/mine/fragment/MineFragment.kt#classHeader:MineFragment
 module_mine/src/standalone/java/com/zhangyt/module/mine/standalone/MineStandaloneActivity.kt#classHeader:MineStandaloneActivity
-module_ota/src/main/java/com/zhangyt/common/ota/OtaActivity.kt#classHeader:OtaActivity
-module_ota/src/main/java/com/zhangyt/common/ota/OtaInfo.kt#classHeader:OtaInfo
-module_ota/src/main/java/com/zhangyt/common/ota/OtaManager.kt#classHeader:OtaManager
-module_ota/src/main/java/com/zhangyt/common/ota/OtaWorker.kt#classHeader:OtaWorker

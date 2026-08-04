@@ -4,7 +4,7 @@
 
 ## 模块职责
 
-展示当前用户状态并提供个性化设置、检查更新和退出登录操作。
+以 Compose + MVVM 展示当前用户状态，并提供主题、语言、检查更新和退出登录操作；同时作为项目 Compose 页面工程模板的可运行参考。
 
 ## 模块类型
 
@@ -16,7 +16,10 @@ feature（支持 `standalone=mine`）。
 
 ## 目录结构
 
-- `src/main`：Mine Fragment 和业务资源。
+- `src/main/.../fragment`：Compose 容器与 Android 平台副作用。
+- `src/main/.../ui`：纯状态驱动的 Compose 页面、响应式布局和 Preview。
+- `src/main/.../viewmodel`：`MineUiState`、`MineUiEffect` 与 `MineViewModel`。
+- `src/test`：状态初始化、设置选择与退出登录测试。
 - `src/standalone`：独立 APK 的 Launcher Activity 与 Manifest。
 
 ## 公共入口
@@ -25,7 +28,7 @@ feature（支持 `standalone=mine`）。
 
 ## 新代码放置
 
-个人中心页面与设置编排放在本模块；用户会话、主题和语言底层能力继续复用相应 core。
+个人中心页面与设置编排放在本模块；用户会话、主题和语言底层能力继续复用相应 core。新 Compose 页面参考 `docs/COMPOSE_PAGE_GUIDE.md` 的职责拆分，不直接复制 Mine 业务实现。
 
 ## 验证命令
 

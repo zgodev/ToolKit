@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zhangyt.common.ota.OtaActivity"
+            android:name="com.zhangyt.module.ota.OtaActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <provider

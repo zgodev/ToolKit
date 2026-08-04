@@ -4,7 +4,7 @@
 
 ## 模块职责
 
-统一跨 feature 的视觉 token、主题切换、Loading、对话框和基础控件；业务专属资源归所属 feature。
+统一跨 feature 的 Compose/Views 视觉 token、主题切换、Loading、对话框和基础控件；业务专属资源归所属 feature。
 
 ## 模块类型
 
@@ -18,15 +18,16 @@ core（Android UI library）。
 
 - `src/main/common-res`：推荐使用的 `common_*` 共享资源。
 - `src/main/res`：待逐步迁移的历史共享控件资源。
-- `src/main/java`：主题与通用控件。
+- `src/main/java/.../compose`：`ToolKitTheme` 与 Compose 设计令牌。
+- `src/main/java` 其他目录：存量主题与通用 View 控件。
 
 ## 公共入口
 
-`ThemeManager`、`LoadingDialog`、`TitleBar`、`NormalDialog`、`NodeProgressBar` 及 `common_*` 资源。
+`ToolKitTheme`、`ToolKitSpacing`、`ThemeManager`、`LoadingDialog`、`TitleBar`、`NormalDialog`、`NodeProgressBar` 及 `common_*` 资源。
 
 ## 新代码放置
 
-先复用现有 token 和控件；只有至少两个 feature 真实共用的视觉能力才新增，并使用 `common_*` 资源前缀。
+Compose 页面先使用 `ToolKitTheme` 和 `ToolKitSpacing`；Views 页面复用现有主题与控件。只有至少两个 feature 真实共用的视觉能力才新增，并使用 `common_*` 资源前缀。
 
 ## 验证命令
 

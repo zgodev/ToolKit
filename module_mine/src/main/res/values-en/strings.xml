@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mine_theme_switch">Switch Theme</string>
-    <string name="mine_language_switch">Switch Language</string>
+    <string name="mine_title">Mine</string>
+    <string name="mine_guest">Guest</string>
+    <string name="mine_not_logged_in">Not signed in</string>
+    <string name="mine_profile_description">Current user profile</string>
+    <string name="mine_personalization">Personalization</string>
+    <string name="mine_theme_switch">Theme color</string>
+    <string name="mine_theme_blue">Ocean blue</string>
+    <string name="mine_theme_red">Coral red</string>
+    <string name="mine_theme_green">Bamboo green</string>
+    <string name="mine_theme_purple">Twilight purple</string>
+    <string name="mine_theme_dark">Midnight</string>
+    <string name="mine_language_switch">Display language</string>
+    <string name="mine_language_system">System default</string>
+    <string name="mine_language_chinese">简体中文</string>
+    <string name="mine_language_english">English</string>
+    <string name="mine_language_japanese">日本語</string>
+    <string name="mine_system_services">System services</string>
     <string name="mine_logout">Logout</string>
+    <string name="mine_logout_description">Clear the local session for this account</string>
+    <string name="mine_logout_success">Logged out</string>
     <string name="mine_check_update">Check Update</string>
+    <string name="mine_check_update_description">Review version details and download available updates</string>
 </resources>

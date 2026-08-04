@@ -17,6 +17,7 @@ feature（支持 `standalone=home`）。
 ## 目录结构
 
 - `src/main`：首页 Fragment、Adapter、ViewModel、模型和资源。
+- `src/test`：消息列表状态加载测试。
 - `src/standalone`：独立 APK 的 Launcher Activity 与 Manifest。
 
 ## 公共入口

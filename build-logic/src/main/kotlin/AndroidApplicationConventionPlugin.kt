@@ -8,6 +8,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         pluginManager.apply("org.jetbrains.kotlin.android")
         extensions.configure(ApplicationExtension::class.java) {
             configureAndroidApplication(this)
+            configureAndroidCompose(this)
         }
+        addComposeDependencies()
     }
 }

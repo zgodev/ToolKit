@@ -82,6 +82,7 @@ feature -X-► other feature
 ## 7. UI、状态与交互
 
 - 新增业务页面和可复用 UI 组件默认使用 Compose，遵循 state hoisting，复用项目 Material 主题、design token 与已有 Composable。
+- 工程模板见 `docs/COMPOSE_PAGE_GUIDE.md`，可运行参考为 `:module_mine`。页面容器、状态契约、ViewModel、无状态 Content Composable 和状态测试各自只承担一个职责；简单到不需要独立契约的页面可合并紧邻类型，但不得省略单向数据流。
 - 除非属于以下情况，不得新建 XML 布局：维护稳定的既有 XML 页面且迁移会明显扩大任务范围；必须接入缺少可靠 Compose 适配的第三方或系统 View；已验证 Compose 存在当前无法消除的兼容性、性能或无障碍阻塞。使用例外时必须在实现说明中记录具体原因，开发习惯和暂时不熟悉 Compose 不构成例外。
 - 对既有 XML 页面的局部维护继续使用 XML + ViewBinding，并复用 `BaseActivity<VB>`、`BaseFragment<VB>` 和现有扩展；较大重构应优先评估迁移 Compose，但不得在无关需求中整体重写稳定页面。
 - 确需混用时，将 `AndroidView` 或 `ComposeView` 限制在适配边界内；同一页面保持一种主渲染体系和一个状态源，不长期维护两套平行实现。
@@ -148,6 +149,8 @@ class OrderRepository @Inject constructor(
 - 构建测试：受影响模块 assemble、app assemble、相关 standalone。
 - 真机验收：OTA 权限与安装、真实下载、WebView/TBS、主题语言视觉和系统交互。
 
+每个含生产源码的 feature 至少保留一项真实测试。`verifyArchitecture` 会拒绝完全没有 `src/test`/`src/androidTest` 的业务模块，但“存在测试文件”只是最低门槛，代码审查仍需确认其验证的是业务行为或稳定契约。
+
 测试名描述行为和条件，不保留框架模板样例，不为了覆盖率测试第三方库实现。Bug 修复应先写能稳定复现根因的失败测试，再实现修复。
 
 ## 12. 独立组件运行
@@ -193,10 +196,14 @@ class OrderRepository @Inject constructor(
 ```bash
 ./gradlew -p build-logic build --offline
 ./gradlew verifyArchitecture verifyProjectIndex --offline
-./gradlew testDebugUnitTest :app:assembleDebug --offline
+./gradlew testDebugUnitTest lintDebug :app:assembleDebug --offline
 ./gradlew :module_login:assembleDebug -Pstandalone=login --offline
 ./gradlew :module_home:assembleDebug -Pstandalone=home --offline
 ./gradlew :module_mine:assembleDebug -Pstandalone=mine --offline
 ./gradlew :module_ota:assembleDebug -Pstandalone=ota --offline
 git diff --check
 ```
+
+依赖可复现性分三层：Version Catalog 固定直接依赖，锁文件固定已解析的传递依赖，Gradle Wrapper 的 `distributionSha256Sum` 校验构建工具包。普通模式使用 `gradle.lockfile`；只有 standalone 增加条件依赖的业务模块才在根构建 `standaloneLockFeatures` 登记，并在 `-Pstandalone=<feature>` 下使用 `gradle-standalone.lockfile`，防止两种依赖图互相污染。依赖调整后要用 `--write-locks` 重新解析并审查所有适用模式；CI 在 main 与 Pull Request 上重复完整治理基线。
+
+`lint-baseline.xml` 是旧代码启用 Lint 时的迁移清单，不是忽略新问题的工具。修复条目后应运行 Lint 让基线自动收缩；只有明确记录延期原因和清理条件时才能更新基线内容。

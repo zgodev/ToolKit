@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mine_theme_switch">切换主题</string>
-    <string name="mine_language_switch">切换语言</string>
+    <string name="mine_title">我的</string>
+    <string name="mine_guest">访客</string>
+    <string name="mine_not_logged_in">尚未登录</string>
+    <string name="mine_profile_description">当前用户资料</string>
+    <string name="mine_personalization">个性化</string>
+    <string name="mine_theme_switch">主题颜色</string>
+    <string name="mine_theme_blue">海盐蓝</string>
+    <string name="mine_theme_red">珊瑚红</string>
+    <string name="mine_theme_green">青竹绿</string>
+    <string name="mine_theme_purple">暮光紫</string>
+    <string name="mine_theme_dark">深夜黑</string>
+    <string name="mine_language_switch">显示语言</string>
+    <string name="mine_language_system">跟随系统</string>
+    <string name="mine_language_chinese">简体中文</string>
+    <string name="mine_language_english">English</string>
+    <string name="mine_language_japanese">日本語</string>
+    <string name="mine_system_services">系统服务</string>
     <string name="mine_logout">退出登录</string>
+    <string name="mine_logout_description">清除当前账号的本地登录状态</string>
+    <string name="mine_logout_success">已退出登录</string>
     <string name="mine_check_update">检测更新</string>
+    <string name="mine_check_update_description">查看版本信息并下载可用更新</string>
 </resources>

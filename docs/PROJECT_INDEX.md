@@ -42,6 +42,9 @@
   - `ThemeManager` — `core/designsystem/src/main/java/com/zhangyt/common/theme/ThemeManager.kt`
   - `ThemeStyle` — `core/designsystem/src/main/java/com/zhangyt/common/theme/ThemeManager.kt`
   - `TitleBar` — `core/designsystem/src/main/java/com/zhangyt/widget/TitleBar.kt`
+  - `ToolKitSpacing` — `core/designsystem/src/main/java/com/zhangyt/core/designsystem/compose/ToolKitSpacing.kt`
+  - `ToolKitTheme` — `core/designsystem/src/main/java/com/zhangyt/core/designsystem/compose/ToolKitTheme.kt`
+  - `toolKitPrimaryColor` — `core/designsystem/src/main/java/com/zhangyt/core/designsystem/compose/ToolKitTheme.kt`
 
 ### `:core:lifecycle`
 
@@ -292,6 +295,10 @@
   - `implementation` → `:core:ui`
 - 公共入口：
   - `MineFragment` — `module_mine/src/main/java/com/zhangyt/module/mine/fragment/MineFragment.kt`
+  - `MineScreen` — `module_mine/src/main/java/com/zhangyt/module/mine/ui/MineScreen.kt`
+  - `MineUiEffect` — `module_mine/src/main/java/com/zhangyt/module/mine/viewmodel/MineContract.kt`
+  - `MineUiState` — `module_mine/src/main/java/com/zhangyt/module/mine/viewmodel/MineContract.kt`
+  - `MineViewModel` — `module_mine/src/main/java/com/zhangyt/module/mine/viewmodel/MineViewModel.kt`
 
 ### `:module_ota`
 
@@ -306,10 +313,10 @@
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
 - 公共入口：
-  - `OtaActivity` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaActivity.kt`
-  - `OtaInfo` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaInfo.kt`
-  - `OtaManager` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaManager.kt`
-  - `OtaWorker` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaWorker.kt`
+  - `OtaActivity` — `module_ota/src/main/java/com/zhangyt/module/ota/OtaActivity.kt`
+  - `OtaInfo` — `module_ota/src/main/java/com/zhangyt/module/ota/OtaInfo.kt`
+  - `OtaManager` — `module_ota/src/main/java/com/zhangyt/module/ota/OtaManager.kt`
+  - `OtaWorker` — `module_ota/src/main/java/com/zhangyt/module/ota/OtaWorker.kt`
 
 ### `build-logic`
 
@@ -492,14 +499,71 @@
 | `login_welcome` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
 | `max` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
 | `mine_check_update` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_check_update` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
 | `mine_check_update` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
-| `mine_fragment_mine` | `layout` | `:module_mine` | `module_mine/src/main/res/layout/mine_fragment_mine.xml` |
+| `mine_check_update_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_check_update_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_check_update_description` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_guest` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_guest` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_guest` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_language_chinese` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_chinese` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_language_chinese` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_language_english` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_english` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_language_english` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_language_japanese` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_japanese` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_language_japanese` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
 | `mine_language_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
 | `mine_language_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_language_system` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_system` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_language_system` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
 | `mine_logout` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_logout` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
 | `mine_logout` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_logout_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_logout_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_logout_description` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_logout_success` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_logout_success` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_logout_success` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_not_logged_in` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_not_logged_in` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_not_logged_in` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_personalization` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_personalization` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_personalization` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_profile_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_profile_description` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_profile_description` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_system_services` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_system_services` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_system_services` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_blue` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_blue` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_theme_blue` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_dark` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_dark` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_theme_dark` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_green` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_green` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_theme_green` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_purple` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_purple` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_theme_purple` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_red` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_red` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_theme_red` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
 | `mine_theme_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
 | `mine_theme_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_title` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_title` | `string` | `:module_mine` | `module_mine/src/main/res/values-ja/strings.xml` |
+| `mine_title` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
 | `network_security_config` | `xml` | `:app` | `app/src/main/res/xml/network_security_config.xml` |
 | `nodeRadius` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
 | `ota_activity_update` | `layout` | `:module_ota` | `module_ota/src/main/res/layout/ota_activity_update.xml` |

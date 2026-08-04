@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mine_title">マイページ</string>
+    <string name="mine_guest">ゲスト</string>
+    <string name="mine_not_logged_in">ログインしていません</string>
+    <string name="mine_profile_description">現在のユーザープロフィール</string>
+    <string name="mine_personalization">カスタマイズ</string>
+    <string name="mine_theme_switch">テーマカラー</string>
+    <string name="mine_theme_blue">オーシャンブルー</string>
+    <string name="mine_theme_red">コーラルレッド</string>
+    <string name="mine_theme_green">バンブーグリーン</string>
+    <string name="mine_theme_purple">トワイライトパープル</string>
+    <string name="mine_theme_dark">ミッドナイト</string>
+    <string name="mine_language_switch">表示言語</string>
+    <string name="mine_language_system">システム設定</string>
+    <string name="mine_language_chinese">简体中文</string>
+    <string name="mine_language_english">English</string>
+    <string name="mine_language_japanese">日本語</string>
+    <string name="mine_system_services">システムサービス</string>
+    <string name="mine_logout">ログアウト</string>
+    <string name="mine_logout_description">このアカウントのローカルセッションを消去します</string>
+    <string name="mine_logout_success">ログアウトしました</string>
+    <string name="mine_check_update">アップデートを確認</string>
+    <string name="mine_check_update_description">バージョン情報と利用可能な更新を確認します</string>
+</resources>

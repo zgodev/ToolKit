@@ -16,4 +16,6 @@ dependencies {
     implementation project(':core:startup')
     implementation libs.androidx.recyclerview
     implementation libs.brvah
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.androidx.arch.core.testing
 }

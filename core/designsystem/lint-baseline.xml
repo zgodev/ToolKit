@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.2.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.2.2)" variant="all" version="8.2.2">
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Library lint checks reference invalid APIs; these checks **will be skipped**!&#xA;&#xA;Lint found an issue registry (`androidx.compose.runtime.lint.RuntimeIssueRegistry`)&#xA;which contains some references to invalid API:&#xA;org.jetbrains.kotlin.analysis.api.session.KtAnalysisSessionProvider: org.jetbrains.kotlin.analysis.api.lifetime.KtLifetimeTokenFactory getTokenFactory()&#xA;(Referenced from androidx/compose/runtime/lint/AutoboxingStateCreationDetector.class)&#xA;&#xA;Therefore, this lint check library is **not** included&#xA;in analysis. This affects the following lint checks:&#xA;`AutoboxingStateValueProperty`&#xA;`AutoboxingStateCreation`&#xA;`CoroutineCreationDuringComposition`&#xA;`FlowOperatorInvokedInComposition`&#xA;`ComposableLambdaParameterNaming`&#xA;`ComposableLambdaParameterPosition`&#xA;`ComposableNaming`&#xA;`StateFlowValueCalledInComposition`&#xA;`CompositionLocalNaming`&#xA;`MutableCollectionMutableState`&#xA;`ProduceStateDoesNotAssignValue`&#xA;`RememberReturnType`&#xA;`OpaqueUnitKey`&#xA;`UnrememberedMutableState`&#xA;&#xA;To use this lint check, upgrade to a more recent version&#xA;of the library.">
+        <location
+            file="$GRADLE_USER_HOME/caches/transforms-4/cb22b3f54b6a7ba202c7bd2fddfa1551/transformed/jetified-runtime-release/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="UseGetLayoutInflater"
+        message="Use of LayoutInflater.from(getContext()) detected. Consider using getLayoutInflater() instead"
+        errorLine1="        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_normal, container);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NormalDialog.java"
+            line="44"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`TitleBar`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`CommonTitleBar`&apos; ?"
+        errorLine1="    &lt;declare-styleable name=&quot;TitleBar&quot;>"
+        errorLine2="                       ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="3"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`widget_title`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_widget_title`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;widget_title&quot; format=&quot;string&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="4"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`NodeProgressBar`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`CommonNodeProgressBar`&apos; ?"
+        errorLine1="    &lt;declare-styleable name=&quot;NodeProgressBar&quot;>"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="7"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`progress`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_progress`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;progress&quot; format=&quot;integer&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="8"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`max`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_max`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;max&quot; format=&quot;integer&quot;/>"
+        errorLine2="              ~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="9"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`primaryNodeColor`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_primaryNodeColor`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;primaryNodeColor&quot; format=&quot;color&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="10"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`secondaryNodeColor`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_secondaryNodeColor`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;secondaryNodeColor&quot; format=&quot;color&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="11"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`nodeRadius`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_nodeRadius`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;nodeRadius&quot; format=&quot;dimension&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="12"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`secondaryNodeRadius`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_secondaryNodeRadius`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;secondaryNodeRadius&quot; format=&quot;dimension&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="13"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`labelTextSize`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_labelTextSize`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;labelTextSize&quot; format=&quot;dimension&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="14"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`labelTextColor`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_labelTextColor`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;labelTextColor&quot; format=&quot;color&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="15"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`progressBarHeight`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_progressBarHeight`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;progressBarHeight&quot; format=&quot;dimension&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="16"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`progressColor`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_progressColor`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;progressColor&quot; format=&quot;color&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="17"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`trackColor`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_trackColor`&apos; ?"
+        errorLine1="        &lt;attr name=&quot;trackColor&quot; format=&quot;color&quot;/>"
+        errorLine2="              ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/atts.xml"
+            line="18"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`bg_btn_gray`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_bg_btn_gray`&apos; ?"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2=" ~~~~~~~~">
+        <location
+            file="src/main/res/drawable/bg_btn_gray.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`bg_btn_green`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_bg_btn_green`&apos; ?"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2=" ~~~~~~~~">
+        <location
+            file="src/main/res/drawable/bg_btn_green.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`transparent`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_transparent`&apos; ?"
+        errorLine1="    &lt;color name=&quot;transparent&quot;>#00000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="3"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`black`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_black`&apos; ?"
+        errorLine1="    &lt;color name=&quot;black&quot;>#FF000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="4"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`white`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_white`&apos; ?"
+        errorLine1="    &lt;color name=&quot;white&quot;>#FFFFFFFF&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="5"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`blue`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_blue`&apos; ?"
+        errorLine1="    &lt;color name=&quot;blue&quot;>#FF14CDC8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="6"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`blue_press`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_blue_press`&apos; ?"
+        errorLine1="    &lt;color name=&quot;blue_press&quot;>#4DD1CE&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="7"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`green_unClickable`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_green_unClickable`&apos; ?"
+        errorLine1="    &lt;color name=&quot;green_unClickable&quot;>#BEF1ED&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="8"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`gray_btn`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_gray_btn`&apos; ?"
+        errorLine1="    &lt;color name=&quot;gray_btn&quot;>#FFBFC0C0&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="9"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`gray_btn_press`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_gray_btn_press`&apos; ?"
+        errorLine1="    &lt;color name=&quot;gray_btn_press&quot;>#D9D9D9&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="10"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`gray_bg`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_gray_bg`&apos; ?"
+        errorLine1="    &lt;color name=&quot;gray_bg&quot;>#F4F6FA&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="11"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`gray_text`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_gray_text`&apos; ?"
+        errorLine1="    &lt;color name=&quot;gray_text&quot;>#97999B&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="12"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`corner_gray_bg`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_corner_gray_bg`&apos; ?"
+        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2=" ~~~~~">
+        <location
+            file="src/main/res/drawable/corner_gray_bg.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`dialog_normal`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_dialog_normal`&apos; ?"
+        errorLine1="&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_normal.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="ResourceName"
+        message="Resource named &apos;`icon_error`&apos; does not start with the project&apos;s resource prefix &apos;`common_`&apos;; rename to &apos;`common_icon_error`&apos; ?">
+        <location
+            file="src/main/res/drawable/icon_error.png"/>
+    </issue>
+
+    <issue
+        id="UseCompatLoadingForDrawables"
+        message="Use `AppCompatResources.getDrawable()`"
+        errorLine1="        icon.setImageDrawable(getContext().getDrawable(res));"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NormalDialog.java"
+            line="108"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="DrawAllocation"
+        message="Avoid object allocations during draw/layout operations (preallocate and reuse instead)"
+        errorLine1="            RectF(startX, centerY - progressBarHeight / 2, endX, centerY + progressBarHeight / 2),"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="122"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="DrawAllocation"
+        message="Avoid object allocations during draw/layout operations (preallocate and reuse instead)"
+        errorLine1="            RectF(startX, centerY - progressBarHeight / 2, progressEnd, centerY + progressBarHeight / 2),"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="131"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This `TypedArray` should be recycled after use with `#recycle()`"
+        errorLine1="        context.obtainStyledAttributes(attrs, R.styleable.NodeProgressBar).apply {"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="67"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This `TypedArray` should be recycled after use with `#recycle()`"
+        errorLine1="        context.obtainStyledAttributes(attrs, R.styleable.NodeProgressBar).apply {"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="67"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This `TypedArray` should be recycled after use with `#recycle()`"
+        errorLine1="        context.obtainStyledAttributes(attrs, R.styleable.NodeProgressBar).apply {"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="67"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;common_loading&quot;>Loading...&lt;/string>"
+        errorLine2="                                  ~~~~~~~~~~">
+        <location
+            file="src/main/common-res/values-en/strings.xml"
+            line="9"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;common_loading&quot;>読み込み中...&lt;/string>"
+        errorLine2="                                  ~~~~~~~~">
+        <location
+            file="src/main/common-res/values-ja/strings.xml"
+            line="9"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;common_loading&quot;>加载中...&lt;/string>"
+        errorLine2="                                  ~~~~~~">
+        <location
+            file="src/main/common-res/values/strings.xml"
+            line="10"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/icon_error.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/icon_error.png"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        message="Custom view `NodeProgressBar` overrides `onTouchEvent` but not `performClick`"
+        errorLine1="    override fun onTouchEvent(event: MotionEvent): Boolean {"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/widget/NodeProgressBar.kt"
+            line="158"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_normal.xml"
+            line="20"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;温馨提示&quot;, should use `@string` resource"
+        errorLine1="        android:text=&quot;温馨提示&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_normal.xml"
+            line="10"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;再试一次&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;再试一次&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_normal.xml"
+            line="48"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;重新拍照&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;重新拍照&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/dialog_normal.xml"
+            line="59"
+            column="13"/>
+    </issue>
+
+</issues>

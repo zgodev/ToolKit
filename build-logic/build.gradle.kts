@@ -2,6 +2,10 @@ plugins {
     `kotlin-dsl`
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 group = "com.zhangyt.toolkit.buildlogic"
 
 repositories {
@@ -11,12 +15,12 @@ repositories {
 }
 
 dependencies {
-    implementation("com.android.tools.build:gradle:8.2.2")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.22-1.0.17")
-    implementation("com.google.dagger:hilt-android-gradle-plugin:2.51.1")
+    implementation(libs.android.gradle.plugin)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.ksp.gradle.plugin)
+    implementation(libs.hilt.gradle.plugin)
     testImplementation(gradleTestKit())
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit4)
 }
 
 gradlePlugin {

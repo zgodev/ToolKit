@@ -25,6 +25,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             pluginManager.apply("org.jetbrains.kotlin.android")
             extensions.configure(ApplicationExtension::class.java) {
                 configureAndroidApplication(this)
+                configureAndroidCompose(this)
                 defaultConfig {
                     applicationId = "com.zhangyt.toolkit.$feature"
                     versionCode = 1
@@ -41,6 +42,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             pluginManager.apply("org.jetbrains.kotlin.android")
             extensions.configure(LibraryExtension::class.java) {
                 configureAndroidLibrary(this)
+                configureAndroidCompose(this)
                 defaultConfig {
                     buildConfigField("boolean", "STANDALONE", "false")
                 }
@@ -48,5 +50,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
         }
 
         extensions.extraProperties["toolkitStandalone"] = standalone
+        addComposeDependencies()
     }
 }

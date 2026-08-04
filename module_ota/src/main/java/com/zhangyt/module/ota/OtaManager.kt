@@ -1,4 +1,4 @@
-package com.zhangyt.common.ota
+package com.zhangyt.module.ota
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,10 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
+ * @description: 管理唯一 OTA 下载任务、下载状态观察与 APK 安装
+ * @author: zhangyoutao
+ * @Date: 2026-04-23
+ *
  * OTA 管理器
  *
  * 封装 WorkManager 下载任务的创建、观察和安装逻辑。

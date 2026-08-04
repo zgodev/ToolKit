@@ -37,7 +37,7 @@ grep -n "公共入口" module_xxx/README.md
 ToolKit 是面向中大型 Android 项目的严格组件化骨架。Kotlin 为主，遗留 Java 隔离在 `legacy/`；主应用包名为 `com.zhangyt.toolkit`。
 
 - JDK 17、Gradle 8.7、AGP 8.2.2、Kotlin 1.9.22。
-- 依赖版本只在 `gradle/libs.versions.toml` 维护；模块不得声明仓库或散落版本号。
+- 依赖版本只在 `gradle/libs.versions.toml` 维护；模块不得声明仓库或散落版本号。普通模式使用模块内 `gradle.lockfile`；只有 standalone 存在额外条件依赖的 feature 才使用同目录 `gradle-standalone.lockfile`，并登记到根构建的 `standaloneLockFeatures`，禁止手工合并两种依赖图。
 - 通用 Gradle 配置在 `build-logic`；模块优先复用 `toolkit.*` 约定插件。
 - 不顺手升级 Kotlin、KSP、AGP 或核心依赖。确需升级时先说明兼容、构建和发布影响。
 
@@ -95,6 +95,7 @@ ToolKit 是面向中大型 Android 项目的严格组件化骨架。Kotlin 为�
 - 页面配套类型使用同一领域前缀，如 `LoginActivity`、`LoginViewModel`、`LoginRepository`、`LoginUiState`。
 - DTO、持久化 Entity、领域模型和 UiModel 不混用；跨模块稳定模型放 `core:model`，业务内部模型留在所属 feature。
 - 新增业务页面和可复用 UI 组件默认使用 Compose，并复用项目 Material 主题、design token 与已有 Composable；除下述例外外不得新建 XML 布局。
+- Compose 页面按 `docs/COMPOSE_PAGE_GUIDE.md` 落地：容器只处理 Android 平台副作用，ViewModel 暴露单一 `UiState` 和独立 `UiEffect`，无状态 Content Composable 负责渲染；必须提供可复用 preview 状态和 ViewModel/状态测试。`:module_mine` 是可运行参考实现，不得复制后再保留两套同义基类或主题。
 - 仅在维护稳定的既有 XML 页面且迁移明显扩大任务范围、必须接入缺少可靠 Compose 适配的第三方/系统 View，或存在已验证的兼容性、性能、无障碍阻塞时，才允许继续使用或新增 XML；必须在实现说明中记录具体原因，开发习惯和暂时不熟悉 Compose 不构成例外。
 - 不在无关需求中整体重写稳定 XML 页面；确需 View/Compose 混用时，将 `AndroidView` 或 `ComposeView` 封装在清晰边界内，禁止同一页面长期维护两套平行状态源。
 - Activity/Fragment 优先复用现有 Base 类，并遵循上述页面架构与数据流规则。
@@ -120,13 +121,17 @@ ToolKit 是面向中大型 Android 项目的严格组件化骨架。Kotlin 为�
 ```bash
 ./gradlew -p build-logic build --offline
 ./gradlew verifyArchitecture verifyProjectIndex --offline
-./gradlew testDebugUnitTest :app:assembleDebug --offline
+./gradlew testDebugUnitTest lintDebug :app:assembleDebug --offline
 ./gradlew :module_login:assembleDebug -Pstandalone=login --offline
 ./gradlew :module_home:assembleDebug -Pstandalone=home --offline
 ./gradlew :module_mine:assembleDebug -Pstandalone=mine --offline
 ./gradlew :module_ota:assembleDebug -Pstandalone=ota --offline
 git diff --check
 ```
+
+直接依赖版本只改 `gradle/libs.versions.toml`，传递依赖版本由锁文件固定；普通模式更新 `gradle.lockfile`。若目标 feature 已登记 `standaloneLockFeatures`，还必须用 `-Pstandalone=<feature> --write-locks` 更新其 `gradle-standalone.lockfile`。依赖变化必须审查适用的锁文件。Gradle Wrapper 升级时必须同步更新官方 `distributionSha256Sum`。CI 配置位于 `.github/workflows/android-governance.yml`，不得用跳过任务或无条件 continue-on-error 绕过治理失败。
+
+各 Android 模块的 `lint-baseline.xml` 只冻结 Lint 首次启用时的历史欠账。修复历史问题后同步收缩基线；新增问题不得通过重跑 `updateLintBaseline` 塞入基线，确需延期必须说明影响、负责人和清理条件。
 
 构建成功不等于设备验收，涉及安装权限、真实下载、WebView/TBS、主题或语言视觉效果时明确说明真机边界。
 

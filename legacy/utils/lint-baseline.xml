@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.2.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.2.2)" variant="all" version="8.2.2">
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="                    sb.append(((Integer.toHexString((digestByte &amp; 0xFF) | 0x100)).substring(1, 3)).toUpperCase());"
+        errorLine2="                                                                                                   ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/AppSignUtil.java"
+            line="166"
+            column="100"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="            ret += hex.toUpperCase();"
+        errorLine2="                       ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="46"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="        return ret.toUpperCase();"
+        errorLine2="                   ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="48"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="        return buff.toString().toUpperCase();"
+        errorLine2="                               ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="210"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="                sb.append(unicode.toLowerCase());"
+        errorLine2="                                  ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="918"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        String fAmount = String.format(&quot;%d&quot;, Integer.parseInt(sAmount));"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="1012"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        String fAmount = String.format(&quot;%012d&quot;, Integer.parseInt(sAmount));"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="1032"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="            return result.toString().toUpperCase();"
+        errorLine2="                                     ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/PubUtils.java"
+            line="1507"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        errorLine1="        SimpleDateFormat format = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/LogManager.java"
+            line="87"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        errorLine1="    private static SimpleDateFormat myLogSdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss:SSS&quot;);// 日志的输出格式"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/WriteLog.java"
+            line="23"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 21"
+        errorLine1="        if (android.os.Build.VERSION.SDK_INT >= 18) {"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/zhangyt/utils/FileUtils.java"
+            line="489"
+            column="13"/>
+    </issue>
+
+</issues>

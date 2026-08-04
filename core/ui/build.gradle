@@ -20,4 +20,5 @@ dependencies {
     implementation libs.glide
     implementation libs.utilcode
     implementation project(':core:designsystem')
+    testImplementation libs.kotlinx.coroutines.test
 }

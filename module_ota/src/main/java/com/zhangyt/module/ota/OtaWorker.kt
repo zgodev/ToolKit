@@ -1,4 +1,4 @@
-package com.zhangyt.common.ota
+package com.zhangyt.module.ota
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -20,6 +20,10 @@ import java.net.URL
 import java.security.MessageDigest
 
 /**
+ * @description: 在 WorkManager 后台执行支持断点续传、进度上报与 MD5 校验的 APK 下载
+ * @author: zhangyoutao
+ * @Date: 2026-04-23
+ *
  * OTA 下载 Worker（支持断点续传）
  *
  * 使用 WorkManager 的 CoroutineWorker 在后台执行 APK 下载任务，

@@ -6,9 +6,18 @@ android {
     namespace 'com.zhangyt.core.designsystem'
     resourcePrefix 'common_'
     sourceSets.main.res.srcDir 'src/main/common-res'
+    buildFeatures.compose true
+    composeOptions.kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
 }
 
 dependencies {
+    api platform(libs.androidx.compose.bom)
+    api libs.androidx.compose.ui
+    api libs.androidx.compose.foundation
+    api libs.androidx.compose.material3
+    api libs.androidx.compose.ui.tooling.preview
+    debugImplementation libs.androidx.compose.ui.tooling
+
     api libs.androidx.appcompat
     api libs.androidx.core.ktx
     api libs.androidx.material

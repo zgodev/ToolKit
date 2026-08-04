@@ -16,7 +16,9 @@ feature（支持 `standalone=ota`）。
 
 ## 目录结构
 
-- `src/main`：OTA Activity、Manager、Worker、模型、Manifest 和资源。
+- `src/main/java/com/zhangyt/module/ota`：OTA Activity、Manager、Worker 与模型，包名与模块 namespace 一致。
+- `src/main/res` 与 Manifest：OTA 资源和组件声明。
+- `src/test`：公开 OTA 路由契约测试。
 - `src/standalone`：独立 APK Manifest。
 
 ## 公共入口

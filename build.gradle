@@ -2,6 +2,18 @@ plugins {
     id 'toolkit.architecture-guard'
 }
 
+def standaloneFeature = providers.gradleProperty('standalone').orNull
+def standaloneLockFeatures = ['mine'] as Set
+
+allprojects {
+    dependencyLocking {
+        lockAllConfigurations()
+        if (standaloneFeature in standaloneLockFeatures && project.name == "module_${standaloneFeature}") {
+            lockFile.set(project.layout.projectDirectory.file('gradle-standalone.lockfile'))
+        }
+    }
+}
+
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }

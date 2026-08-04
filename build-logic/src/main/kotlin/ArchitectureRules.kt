@@ -19,6 +19,8 @@ data class ArchitectureSnapshot(
     val projectIndexMatches: Boolean = true,
     val resourcePrefixExceptions: Set<String> = emptySet(),
     val standaloneFeature: String? = null,
+    val moduleNamespaces: Map<String, String> = emptyMap(),
+    val sourcePackages: Map<String, String> = emptyMap(),
 )
 
 data class ArchitectureViolation(
@@ -124,6 +126,55 @@ object ArchitectureRules {
                 }
             }
         }
+
+        snapshot.modulePaths
+            .distinct()
+            .sorted()
+            .filter { it.matches(Regex(":module_[^:]+")) }
+            .filter { modulePath ->
+                val moduleDirectory = modulePath.removePrefix(":")
+                val hasProductionSource = snapshot.sourceFilePaths.any { path ->
+                    path.startsWith("$moduleDirectory/src/main/")
+                }
+                val hasTestSource = snapshot.sourceFilePaths.any { path ->
+                    path.startsWith("$moduleDirectory/src/test/") ||
+                        path.startsWith("$moduleDirectory/src/androidTest/")
+                }
+                hasProductionSource && !hasTestSource
+            }
+            .forEach { modulePath ->
+                add(
+                    ArchitectureViolation(
+                        ruleId = "ARCH_FEATURE_TEST_MISSING",
+                        location = modulePath,
+                        message = "业务模块已有生产代码但缺少测试。请至少提供路由、状态、Repository 或 standalone 契约中的一项真实测试。",
+                    )
+                )
+            }
+
+        snapshot.modulePaths
+            .distinct()
+            .sorted()
+            .filter { it.matches(Regex(":module_[^:]+")) }
+            .forEach { modulePath ->
+                val namespace = snapshot.moduleNamespaces[modulePath] ?: return@forEach
+                val moduleDirectory = modulePath.removePrefix(":")
+                snapshot.sourcePackages
+                    .filterKeys { it.startsWith("$moduleDirectory/src/main/") }
+                    .filterValues { sourcePackage ->
+                        sourcePackage != namespace && !sourcePackage.startsWith("$namespace.")
+                    }
+                    .toSortedMap()
+                    .forEach { (sourcePath, sourcePackage) ->
+                        add(
+                            ArchitectureViolation(
+                                ruleId = "ARCH_FEATURE_PACKAGE",
+                                location = sourcePath,
+                                message = "业务源码包 `$sourcePackage` 不属于模块 namespace `$namespace`。请迁移到当前 feature，禁止继续占用历史 common 包。",
+                            )
+                        )
+                    }
+            }
 
         snapshot.resources
             .distinct()

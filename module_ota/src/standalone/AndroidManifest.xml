@@ -10,7 +10,7 @@
         android:label="OTA"
         android:theme="@style/Common_Theme_Blue">
         <activity
-            android:name="com.zhangyt.common.ota.OtaActivity"
+            android:name="com.zhangyt.module.ota.OtaActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -1,12 +1,13 @@
 # ToolKit
 
-ToolKit 是面向中大型 Android 项目的严格组件化骨架，采用 Kotlin、ViewBinding、Hilt、ARouter、Retrofit/OkHttp、Coroutines/Flow 和 MMKV，并为 Codex/Claude 持续开发提供可生成索引与自动架构守卫。
+ToolKit 是面向中大型 Android 项目的严格组件化骨架，采用 Kotlin、Jetpack Compose（新页面优先）、ViewBinding（存量兼容）、Hilt、ARouter、Retrofit/OkHttp、Coroutines/Flow 和 MMKV，并为 Codex/Claude 持续开发提供可生成索引与自动架构守卫。
 
 ## 快速入口
 
 - [项目索引](docs/PROJECT_INDEX.md)：模块、直接依赖、公共入口、路由、资源和 standalone 命令；优先从这里定位现有能力。
 - [AI 协作规则](AGENTS.md)：AI 开发必须遵守的读取顺序、复用门槛、架构红线和完成标准。
 - [组件化开发指南](FRAMEWORK_GUIDE.md)：模块归属、命名、UI、状态、网络、协程、测试和审查规范。
+- [Compose 页面工程模板](docs/COMPOSE_PAGE_GUIDE.md)：页面文件职责、状态/事件数据流、预览、测试与交付清单。
 - 各模块目录下的 `README.md`：该模块的职责、允许依赖、公共入口和验证命令。
 
 ## 架构概览
@@ -27,11 +28,11 @@ build-logic                 Gradle 约定、独立组件与架构治理
 
 ## 构建与治理
 
-项目固定使用 JDK 17，依赖版本统一在 `gradle/libs.versions.toml`。首次在线构建下载完依赖后，可使用离线基线：
+项目固定使用 JDK 17，直接依赖版本统一在 `gradle/libs.versions.toml`，传递依赖由各模块 `gradle.lockfile` 固定；仅 standalone 存在额外条件依赖的模块（当前为 `module_mine`）另用 `gradle-standalone.lockfile`，两种依赖图分别审查。Gradle Wrapper 使用官方 SHA-256 校验。首次在线构建下载完依赖后，可使用离线基线：
 
 ```bash
 ./gradlew verifyArchitecture verifyProjectIndex --offline
-./gradlew testDebugUnitTest :app:assembleDebug --offline
+./gradlew testDebugUnitTest lintDebug :app:assembleDebug --offline
 ```
 
 模块、公共入口、路由或资源变化后重新生成索引：
@@ -56,3 +57,5 @@ build-logic                 Gradle 约定、独立组件与架构治理
 正式应用：`SplashActivity` → 登录态判断 → `LoginActivity` → `MainActivity`。演示登录接受至少 4 位账号和至少 6 位密码；“我的”页面提供主题、语言、OTA 与退出登录示例。
 
 构建成功不等于设备验收；OTA 安装权限、真实下载、WebView/TBS 和主题/语言视觉效果需要真机验证。
+
+GitHub Actions 会在 main 推送与 Pull Request 上自动执行 build-logic、架构/索引、单测、Lint、app 和四个 standalone 构建，规则不通过时禁止把结果视为可交付。

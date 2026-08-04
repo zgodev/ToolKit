@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zhangyt.common.state.UiLoadState
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,6 +89,8 @@ open class BaseViewModel : ViewModel() {
             if (showLoading) loadState.postValue(UiLoadState.Loading)
             block()
             loadState.postValue(UiLoadState.Success)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
         } catch (t: Throwable) {
             loadState.postValue(UiLoadState.Error(t.message ?: "未知错误", t))
             onError?.invoke(t)
@@ -115,6 +118,8 @@ open class BaseViewModel : ViewModel() {
             if (showLoading) _loadStateFlow.value = UiLoadState.Loading
             block()
             _loadStateFlow.value = UiLoadState.Success
+        } catch (cancellation: CancellationException) {
+            throw cancellation
         } catch (t: Throwable) {
             _loadStateFlow.value = UiLoadState.Error(t.message ?: "未知错误", t)
             onError?.invoke(t)

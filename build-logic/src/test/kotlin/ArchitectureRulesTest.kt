@@ -178,6 +178,42 @@ class ArchitectureRulesTest {
         assertEquals(listOf("ARCH_CLASS_HEADER"), violations.map { it.ruleId })
     }
 
+    @Test
+    fun `feature with production source requires a real test source`() {
+        val violations = ArchitectureRules.validate(
+            snapshot(
+                modulePaths = listOf(":module_mine"),
+                sourceFilePaths = listOf(
+                    "module_mine/src/main/java/com/zhangyt/module/mine/MineFragment.kt",
+                ),
+            )
+        )
+
+        assertEquals(
+            listOf("ARCH_FEATURE_TEST_MISSING"),
+            violations.map { it.ruleId },
+        )
+    }
+
+    @Test
+    fun `feature production package must stay under module namespace`() {
+        val violations = ArchitectureRules.validate(
+            snapshot(
+                modulePaths = listOf(":module_ota"),
+                moduleNamespaces = mapOf(":module_ota" to "com.zhangyt.module.ota"),
+                sourcePackages = mapOf(
+                    "module_ota/src/main/java/com/zhangyt/common/ota/OtaActivity.kt" to
+                        "com.zhangyt.common.ota",
+                ),
+            )
+        )
+
+        assertEquals(
+            listOf("ARCH_FEATURE_PACKAGE"),
+            violations.map { it.ruleId },
+        )
+    }
+
     private fun snapshot(
         modulePaths: List<String> = emptyList(),
         dependencies: List<ProjectDependencyEdge> = emptyList(),
@@ -186,13 +222,23 @@ class ArchitectureRulesTest {
         projectIndexMatches: Boolean = true,
         resourcePrefixExceptions: Set<String> = emptySet(),
         standaloneFeature: String? = null,
+        moduleNamespaces: Map<String, String> = emptyMap(),
+        sourcePackages: Map<String, String> = emptyMap(),
     ) = ArchitectureSnapshot(
         modulePaths = modulePaths,
         dependencies = dependencies,
+        readmes = modulePaths.associateWith { modulePath ->
+            ModuleReadmeIndex(
+                sourcePath = "${modulePath.removePrefix(":").replace(':', '/')}/README.md",
+                headings = ArchitectureRules.requiredReadmeSections,
+            )
+        },
         resources = resources,
         sourceFilePaths = sourceFilePaths,
         projectIndexMatches = projectIndexMatches,
         resourcePrefixExceptions = resourcePrefixExceptions,
         standaloneFeature = standaloneFeature,
+        moduleNamespaces = moduleNamespaces,
+        sourcePackages = sourcePackages,
     )
 }

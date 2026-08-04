@@ -1,6 +1,10 @@
-package com.zhangyt.common.ota
+package com.zhangyt.module.ota
 
 /**
+ * @description: 承载 OTA 版本、安装包校验信息与更新策略
+ * @author: zhangyoutao
+ * @Date: 2026-04-23
+ *
  * OTA 升级信息数据类
  *
  * @param versionCode 新版本号

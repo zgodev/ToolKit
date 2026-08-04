@@ -3,6 +3,7 @@ package com.zhangyt.common.language
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import androidx.annotation.RequiresApi
 import com.tencent.mmkv.MMKV
 import com.zhangyt.common.utils.AppManager
 import java.util.Locale
@@ -66,14 +67,15 @@ object LanguageManager {
 
     private fun getSystemLocale(): Locale {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Resources_getSystem_locale0()
+            getSystemLocaleApi24()
         } else {
             @Suppress("DEPRECATION")
             android.content.res.Resources.getSystem().configuration.locale
         }
     }
 
-    private fun Resources_getSystem_locale0(): Locale {
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getSystemLocaleApi24(): Locale {
         return android.content.res.Resources.getSystem().configuration.locales[0]
     }
 }

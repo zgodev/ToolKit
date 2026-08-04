@@ -1,0 +1,50 @@
+name: Android Governance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify build logic
+        run: ./gradlew -p build-logic build --no-daemon --stacktrace
+
+      - name: Verify architecture and generated index
+        run: ./gradlew verifyArchitecture verifyProjectIndex --no-daemon --stacktrace
+
+      - name: Test, lint and assemble app
+        run: ./gradlew testDebugUnitTest lintDebug :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Assemble standalone features
+        run: |
+          ./gradlew :module_login:assembleDebug -Pstandalone=login --no-daemon --stacktrace
+          ./gradlew :module_home:assembleDebug -Pstandalone=home --no-daemon --stacktrace
+          ./gradlew :module_mine:assembleDebug -Pstandalone=mine --no-daemon --stacktrace
+          ./gradlew :module_ota:assembleDebug -Pstandalone=ota --no-daemon --stacktrace
+
+      - name: Verify patch whitespace
+        run: git diff --check

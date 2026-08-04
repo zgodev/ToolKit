@@ -17,6 +17,7 @@ feature（支持 `standalone=login`）。
 ## 目录结构
 
 - `src/main`：登录业务源码、资源和 Manifest。
+- `src/test`：演示登录输入约束与用户映射测试。
 - `src/standalone`：独立 APK 的 Application 与 Manifest。
 
 ## 公共入口

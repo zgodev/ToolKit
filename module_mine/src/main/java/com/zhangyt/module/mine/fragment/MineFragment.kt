@@ -1,54 +1,67 @@
 package com.zhangyt.module.mine.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.zhangyt.common.base.BaseFragment
-import com.zhangyt.common.ext.click
-import com.zhangyt.common.ext.toast
-import com.zhangyt.common.language.Language
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.zhangyt.common.language.LanguageManager
+import com.zhangyt.common.router.RouterManager
 import com.zhangyt.common.router.RouterPath
 import com.zhangyt.common.theme.ThemeManager
-import com.zhangyt.common.theme.ThemeStyle
-import com.zhangyt.common.user.UserManager
-import com.zhangyt.module.mine.databinding.MineFragmentMineBinding
+import com.zhangyt.module.mine.R
+import com.zhangyt.module.mine.ui.MineScreen
+import com.zhangyt.module.mine.viewmodel.MineUiEffect
+import com.zhangyt.module.mine.viewmodel.MineViewModel
+import kotlinx.coroutines.launch
 
 /**
- * 我的 Fragment。
- *
- * 这里演示：
- * - 用户信息显示
- * - 主题切换（蓝/红/绿/紫/暗夜）
- * - 语言切换（中英日）
- * - 退出登录
+ * @description: 承载我的 Compose 页面并处理路由、主题和语言等 Android 平台副作用
+ * @author: zhangyoutao
+ * @Date: 2026-04-10
  */
 @Route(path = RouterPath.Mine.FRAGMENT_MINE)
-class MineFragment : BaseFragment<MineFragmentMineBinding>() {
+class MineFragment : Fragment() {
 
-    override fun initView() {
-        binding.titleBar.setTitle("我的")
+    private val viewModel: MineViewModel by viewModels()
 
-        // 显示用户昵称
-        val user = UserManager.getUser()
-        binding.tvNickname.text = user?.nickname ?: "未登录"
-        binding.tvPhone.text = user?.phone ?: ""
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            MineScreen(viewModel = viewModel)
+        }
+    }
 
-        // 主题切换
-        binding.btnThemeBlue.click { ThemeManager.switch(ThemeStyle.BLUE) }
-        binding.btnThemeRed.click { ThemeManager.switch(ThemeStyle.RED) }
-        binding.btnThemeGreen.click { ThemeManager.switch(ThemeStyle.GREEN) }
-        binding.btnThemePurple.click { ThemeManager.switch(ThemeStyle.PURPLE) }
-        binding.btnThemeDark.click { ThemeManager.switch(ThemeStyle.DARK) }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEffect.collect(::handleEffect)
+            }
+        }
+    }
 
-        // 语言切换
-        binding.btnLangZh.click { LanguageManager.switch(requireContext(), Language.ZH_CN) }
-        binding.btnLangEn.click { LanguageManager.switch(requireContext(), Language.EN) }
-        binding.btnLangJa.click { LanguageManager.switch(requireContext(), Language.JA) }
-        binding.btnCheckUpdate.click { navigation(RouterPath.Ota.ACTIVITY_OTA) }
-        // 退出登录
-        binding.btnLogout.click {
-            UserManager.logout()
-            toast("已退出登录")
-            requireActivity().finish()
+    private fun handleEffect(effect: MineUiEffect) {
+        when (effect) {
+            is MineUiEffect.ApplyTheme -> ThemeManager.switch(effect.theme)
+            is MineUiEffect.ApplyLanguage -> LanguageManager.switch(requireContext(), effect.language)
+            MineUiEffect.OpenOta -> RouterManager.start(RouterPath.Ota.ACTIVITY_OTA)
+            MineUiEffect.LoggedOut -> {
+                Toast.makeText(requireContext(), R.string.mine_logout_success, Toast.LENGTH_SHORT).show()
+                requireActivity().finish()
+            }
         }
     }
 }

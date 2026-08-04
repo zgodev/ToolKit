@@ -34,6 +34,8 @@ internal fun Project.configureAndroidApplication(extension: ApplicationExtension
             "META-INF/NOTICE",
             "META-INF/LICENSE",
         )
+        bundle.language.enableSplit = false
+        lint.baseline = file("lint-baseline.xml")
     }
     configureKotlin17()
     addAndroidTestDependencies()
@@ -58,6 +60,7 @@ internal fun Project.configureAndroidLibrary(extension: LibraryExtension) {
             viewBinding = true
             buildConfig = true
         }
+        lint.baseline = file("lint-baseline.xml")
     }
     configureKotlin17()
     addAndroidTestDependencies()
@@ -79,13 +82,38 @@ internal fun Project.configureJvmLibrary() {
     tasks.withType(Test::class.java).configureEach {
         useJUnit()
     }
-    dependencies.add("testImplementation", "junit:junit:4.13.2")
+    dependencies.add("testImplementation", library("junit4"))
 }
 
 internal fun Project.addAndroidTestDependencies() {
-    dependencies.add("testImplementation", "junit:junit:4.13.2")
-    dependencies.add("androidTestImplementation", "androidx.test.ext:junit:1.1.5")
-    dependencies.add("androidTestImplementation", "androidx.test.espresso:espresso-core:3.5.1")
+    dependencies.add("testImplementation", library("junit4"))
+    dependencies.add("androidTestImplementation", library("androidx-test-junit"))
+    dependencies.add("androidTestImplementation", library("androidx-test-espresso"))
+}
+
+internal fun Project.addComposeDependencies() {
+    dependencies.add("implementation", dependencies.platform(library("androidx-compose-bom")))
+    dependencies.add("implementation", library("androidx-compose-ui"))
+    dependencies.add("implementation", library("androidx-compose-foundation"))
+    dependencies.add("implementation", library("androidx-compose-material3"))
+    dependencies.add("implementation", library("androidx-compose-material-icons-extended"))
+    dependencies.add("implementation", library("androidx-compose-ui-tooling-preview"))
+    dependencies.add("implementation", library("androidx-activity-compose"))
+    dependencies.add("implementation", library("androidx-lifecycle-runtime-compose"))
+    dependencies.add("debugImplementation", library("androidx-compose-ui-tooling"))
+    dependencies.add("debugImplementation", library("androidx-compose-ui-test-manifest"))
+    dependencies.add("androidTestImplementation", dependencies.platform(library("androidx-compose-bom")))
+    dependencies.add("androidTestImplementation", library("androidx-compose-ui-test-junit4"))
+}
+
+internal fun Project.configureAndroidCompose(extension: ApplicationExtension) {
+    extension.buildFeatures.compose = true
+    extension.composeOptions.kotlinCompilerExtensionVersion = version("composeCompiler")
+}
+
+internal fun Project.configureAndroidCompose(extension: LibraryExtension) {
+    extension.buildFeatures.compose = true
+    extension.composeOptions.kotlinCompilerExtensionVersion = version("composeCompiler")
 }
 
 internal fun Project.library(alias: String) =
@@ -93,3 +121,10 @@ internal fun Project.library(alias: String) =
         .named("libs")
         .findLibrary(alias)
         .get()
+
+internal fun Project.version(alias: String): String =
+    extensions.getByType(VersionCatalogsExtension::class.java)
+        .named("libs")
+        .findVersion(alias)
+        .get()
+        .requiredVersion

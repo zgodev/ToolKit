@@ -62,6 +62,7 @@ class ArchitectureGuardPlugin : Plugin<Project> {
 
 internal object ProjectGovernanceCollector {
     private val namespaceRegex = Regex("namespace\\s*(?:=\\s*)?['\"]([^'\"]+)['\"]")
+    private val packageRegex = Regex("(?m)^\\s*package\\s+([A-Za-z_][A-Za-z0-9_.]*)\\s*;?\\s*$")
     private val routeRegex = Regex("const\\s+val\\s+([A-Z0-9_]+)\\s*=\\s*\"(/[^\"]+)\"")
     private val kotlinObjectRegex = Regex("\\bobject\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*\\{")
     private val kotlinTypeRegex = Regex(
@@ -155,6 +156,17 @@ internal object ProjectGovernanceCollector {
                 }
             }
 
+        val sourcePackages = androidModules
+            .filter { it.path.matches(Regex(":module_[^:]+")) }
+            .flatMap { module ->
+                module.projectDir.resolve("src/main").walkSourceFiles().mapNotNull { source ->
+                    packageRegex.find(source.readText())?.groupValues?.get(1)?.let { packageName ->
+                        relativePath(rootProject.rootDir, source) to packageName
+                    }
+                }
+            }
+            .toMap()
+
         return ArchitectureSnapshot(
             modulePaths = modulePaths,
             missingBuildFiles = androidModules.filterNot { it.buildFile.isFile }.map { it.path },
@@ -169,6 +181,8 @@ internal object ProjectGovernanceCollector {
             projectIndexMatches = projectIndexMatches,
             resourcePrefixExceptions = frozenResourcePrefixExceptions,
             standaloneFeature = rootProject.findProperty("standalone")?.toString(),
+            moduleNamespaces = androidModules.associate { it.path to parseNamespace(it.buildFile) },
+            sourcePackages = sourcePackages,
         )
     }
 

@@ -1,4 +1,4 @@
-package com.zhangyt.common.ota
+package com.zhangyt.module.ota
 
 import android.Manifest
 import android.content.Intent
@@ -18,6 +18,10 @@ import com.zhangyt.common.router.RouterPath
 import com.zhangyt.module.ota.databinding.OtaActivityUpdateBinding
 
 /**
+ * @description: 展示 OTA 更新信息并编排下载权限、进度观察与安装流程
+ * @author: zhangyoutao
+ * @Date: 2026-04-23
+ *
  * OTA 升级页面
  *
  * 功能：

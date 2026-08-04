@@ -18,4 +18,5 @@ dependencies {
     implementation project(':core:startup')
     implementation libs.androidx.activity.ktx
     implementation libs.androidx.constraintlayout
+    testImplementation libs.kotlinx.coroutines.test
 }
