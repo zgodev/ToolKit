@@ -3,9 +3,8 @@ package com.zhangyt.toolkit
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.zhangyt.common.router.RouterManager
+import com.zhangyt.common.router.RouterPath
 import com.zhangyt.common.user.UserManager
-import com.zhangyt.module.home.api.HomeRoutes
-import com.zhangyt.module.login.api.LoginRoutes
 
 /**
  * 启动页：根据登录态决定跳转到登录页或主页。
@@ -18,9 +17,9 @@ class SplashActivity : AppCompatActivity() {
 
         // 1. 根据登录态跳转
         if (UserManager.isLogin()) {
-            RouterManager.start(HomeRoutes.ACTIVITY_MAIN)
+            RouterManager.start(RouterPath.Home.ACTIVITY_MAIN)
         } else {
-            RouterManager.start(LoginRoutes.ACTIVITY_LOGIN)
+            RouterManager.start(RouterPath.Login.ACTIVITY_LOGIN)
         }
         finish()
     }

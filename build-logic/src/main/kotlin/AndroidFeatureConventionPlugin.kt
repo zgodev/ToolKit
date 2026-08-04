@@ -14,10 +14,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             )
         }
 
-        val feature = path.split(':')
-            .firstOrNull { it.startsWith("module_") }
-            ?.removePrefix("module_")
-            ?: throw GradleException("toolkit.android.feature must be applied below :module_<name>:impl")
+        val feature = path
+            .takeIf { it.matches(Regex(":module_[^:]+")) }
+            ?.removePrefix(":module_")
+            ?: throw GradleException("toolkit.android.feature must be applied to :module_<name>")
         val standalone = requested == feature
 
         if (standalone) {

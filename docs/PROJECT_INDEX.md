@@ -18,14 +18,10 @@
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
   - `implementation` → `:core:web`
-  - `implementation` → `:module_home:api`
-  - `implementation` → `:module_home:impl`
-  - `implementation` → `:module_login:api`
-  - `implementation` → `:module_login:impl`
-  - `implementation` → `:module_mine:api`
-  - `implementation` → `:module_mine:impl`
-  - `implementation` → `:module_ota:api`
-  - `implementation` → `:module_ota:impl`
+  - `implementation` → `:module_home`
+  - `implementation` → `:module_login`
+  - `implementation` → `:module_mine`
+  - `implementation` → `:module_ota`
 - 公共入口：
   - `App` — `app/src/main/java/com/zhangyt/toolkit/App.kt`
   - `MainActivity` — `app/src/main/java/com/zhangyt/toolkit/MainActivity.kt`
@@ -238,51 +234,32 @@
   - `TuringCode` — `legacy/utils/src/main/java/com/zhangyt/utils/TuringCode.java`
   - `WriteLog` — `legacy/utils/src/main/java/com/zhangyt/utils/WriteLog.java`
 
-### `:module_home:api`
+### `:module_home`
 
-- 类型：`feature-api`
-- Namespace：`com.zhangyt.module.home.api`
-- 职责：首页契约模块公开首页各页签路由，不包含列表数据、UI 或页面实现。
-- 说明：[`module_home/api/README.md`](../module_home/api/README.md)
-- 公共入口：
-  - `HomeRoutes` — `module_home/api/src/main/java/com/zhangyt/module/home/api/HomeRoutes.kt`
-
-### `:module_home:impl`
-
-- 类型：`feature-impl`
+- 类型：`feature`
 - Namespace：`com.zhangyt.module.home`
-- 职责：首页实现模块提供聊天、联系人和发现页签及其列表状态，并支持独立 APK 验证。
-- 说明：[`module_home/impl/README.md`](../module_home/impl/README.md)
+- 职责：首页业务模块，包含消息、联系人和发现页面及独立运行入口。
+- 说明：[`module_home/README.md`](../module_home/README.md)
 - 项目依赖：
   - `implementation` → `:core:designsystem`
   - `implementation` → `:core:navigation`
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
   - `implementation` → `:core:utils`
-  - `implementation` → `:module_home:api`
 - 公共入口：
-  - `ChatFragment` — `module_home/impl/src/main/java/com/zhangyt/module/home/fragment/ChatFragment.kt`
-  - `ChatItem` — `module_home/impl/src/main/java/com/zhangyt/module/home/model/ChatItem.kt`
-  - `ChatListAdapter` — `module_home/impl/src/main/java/com/zhangyt/module/home/adapter/ChatListAdapter.kt`
-  - `ChatViewModel` — `module_home/impl/src/main/java/com/zhangyt/module/home/viewmodel/ChatViewModel.kt`
-  - `ContactsFragment` — `module_home/impl/src/main/java/com/zhangyt/module/home/fragment/ContactsFragment.kt`
-  - `DiscoverFragment` — `module_home/impl/src/main/java/com/zhangyt/module/home/fragment/DiscoverFragment.kt`
+  - `ChatFragment` — `module_home/src/main/java/com/zhangyt/module/home/fragment/ChatFragment.kt`
+  - `ChatItem` — `module_home/src/main/java/com/zhangyt/module/home/model/ChatItem.kt`
+  - `ChatListAdapter` — `module_home/src/main/java/com/zhangyt/module/home/adapter/ChatListAdapter.kt`
+  - `ChatViewModel` — `module_home/src/main/java/com/zhangyt/module/home/viewmodel/ChatViewModel.kt`
+  - `ContactsFragment` — `module_home/src/main/java/com/zhangyt/module/home/fragment/ContactsFragment.kt`
+  - `DiscoverFragment` — `module_home/src/main/java/com/zhangyt/module/home/fragment/DiscoverFragment.kt`
 
-### `:module_login:api`
+### `:module_login`
 
-- 类型：`feature-api`
-- Namespace：`com.zhangyt.module.login.api`
-- 职责：登录契约模块公开登录页面路由与稳定跨模块协议，不包含认证实现或 UI。
-- 说明：[`module_login/api/README.md`](../module_login/api/README.md)
-- 公共入口：
-  - `LoginRoutes` — `module_login/api/src/main/java/com/zhangyt/module/login/api/LoginRoutes.kt`
-
-### `:module_login:impl`
-
-- 类型：`feature-impl`
+- 类型：`feature`
 - Namespace：`com.zhangyt.module.login`
-- 职责：登录实现模块负责登录页面、认证数据流和会话写入，并支持独立 APK 验证。
-- 说明：[`module_login/impl/README.md`](../module_login/impl/README.md)
+- 职责：登录业务模块，包含登录页面、网络协议、Repository、ViewModel、DI 与独立运行入口。
+- 说明：[`module_login/README.md`](../module_login/README.md)
 - 项目依赖：
   - `implementation` → `:core:model`
   - `implementation` → `:core:navigation`
@@ -290,33 +267,22 @@
   - `implementation` → `:core:session`
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
-  - `implementation` → `:module_home:api`
-  - `implementation` → `:module_login:api`
 - 公共入口：
-  - `LoginActivity` — `module_login/impl/src/main/java/com/zhangyt/module/login/LoginActivity.kt`
-  - `LoginApi` — `module_login/impl/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
-  - `LoginModule` — `module_login/impl/src/main/java/com/zhangyt/module/login/di/LoginModule.kt`
-  - `LoginRepository` — `module_login/impl/src/main/java/com/zhangyt/module/login/repository/LoginRepository.kt`
-  - `LoginRequest` — `module_login/impl/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
-  - `LoginResponse` — `module_login/impl/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
-  - `LoginViewModel` — `module_login/impl/src/main/java/com/zhangyt/module/login/viewmodel/LoginViewModel.kt`
-  - `SmsRequest` — `module_login/impl/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
+  - `LoginActivity` — `module_login/src/main/java/com/zhangyt/module/login/LoginActivity.kt`
+  - `LoginApi` — `module_login/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
+  - `LoginModule` — `module_login/src/main/java/com/zhangyt/module/login/di/LoginModule.kt`
+  - `LoginRepository` — `module_login/src/main/java/com/zhangyt/module/login/repository/LoginRepository.kt`
+  - `LoginRequest` — `module_login/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
+  - `LoginResponse` — `module_login/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
+  - `LoginViewModel` — `module_login/src/main/java/com/zhangyt/module/login/viewmodel/LoginViewModel.kt`
+  - `SmsRequest` — `module_login/src/main/java/com/zhangyt/module/login/api/LoginApi.kt`
 
-### `:module_mine:api`
+### `:module_mine`
 
-- 类型：`feature-api`
-- Namespace：`com.zhangyt.module.mine.api`
-- 职责：我的契约模块公开个人中心路由，不包含用户设置页面或会话实现。
-- 说明：[`module_mine/api/README.md`](../module_mine/api/README.md)
-- 公共入口：
-  - `MineRoutes` — `module_mine/api/src/main/java/com/zhangyt/module/mine/api/MineRoutes.kt`
-
-### `:module_mine:impl`
-
-- 类型：`feature-impl`
+- 类型：`feature`
 - Namespace：`com.zhangyt.module.mine`
-- 职责：我的实现模块负责个人中心、主题语言入口、OTA 导航与退出登录，并支持独立 APK 验证。
-- 说明：[`module_mine/impl/README.md`](../module_mine/impl/README.md)
+- 职责：“我的”业务模块，包含用户信息、主题、语言、OTA 入口和独立运行能力。
+- 说明：[`module_mine/README.md`](../module_mine/README.md)
 - 项目依赖：
   - `implementation` → `:core:designsystem`
   - `implementation` → `:core:locale`
@@ -324,38 +290,26 @@
   - `implementation` → `:core:session`
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
-  - `implementation` → `:module_mine:api`
-  - `implementation` → `:module_ota:api`
 - 公共入口：
-  - `MineFragment` — `module_mine/impl/src/main/java/com/zhangyt/module/mine/fragment/MineFragment.kt`
+  - `MineFragment` — `module_mine/src/main/java/com/zhangyt/module/mine/fragment/MineFragment.kt`
 
-### `:module_ota:api`
+### `:module_ota`
 
-- 类型：`feature-api`
-- Namespace：`com.zhangyt.module.ota.api`
-- 职责：OTA 契约模块公开升级页面路由，不包含下载、校验、安装或系统权限实现。
-- 说明：[`module_ota/api/README.md`](../module_ota/api/README.md)
-- 公共入口：
-  - `OtaRoutes` — `module_ota/api/src/main/java/com/zhangyt/module/ota/api/OtaRoutes.kt`
-
-### `:module_ota:impl`
-
-- 类型：`feature-impl`
+- 类型：`feature`
 - Namespace：`com.zhangyt.module.ota`
-- 职责：OTA 实现模块负责版本信息、后台下载、文件共享与安装引导，并支持独立 APK 验证。
-- 说明：[`module_ota/impl/README.md`](../module_ota/impl/README.md)
+- 职责：OTA 业务模块，包含版本展示、后台下载、安装引导和独立运行入口。
+- 说明：[`module_ota/README.md`](../module_ota/README.md)
 - 项目依赖：
   - `implementation` → `:core:designsystem`
   - `implementation` → `:core:navigation`
   - `implementation` → `:core:network`
   - `implementation` → `:core:startup`
   - `implementation` → `:core:ui`
-  - `implementation` → `:module_ota:api`
 - 公共入口：
-  - `OtaActivity` — `module_ota/impl/src/main/java/com/zhangyt/common/ota/OtaActivity.kt`
-  - `OtaInfo` — `module_ota/impl/src/main/java/com/zhangyt/common/ota/OtaInfo.kt`
-  - `OtaManager` — `module_ota/impl/src/main/java/com/zhangyt/common/ota/OtaManager.kt`
-  - `OtaWorker` — `module_ota/impl/src/main/java/com/zhangyt/common/ota/OtaWorker.kt`
+  - `OtaActivity` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaActivity.kt`
+  - `OtaInfo` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaInfo.kt`
+  - `OtaManager` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaManager.kt`
+  - `OtaWorker` — `module_ota/src/main/java/com/zhangyt/common/ota/OtaWorker.kt`
 
 ### `build-logic`
 
@@ -389,13 +343,13 @@
 | 路径 | 所属模块 | 常量 | 声明位置 |
 | --- | --- | --- | --- |
 | `/common/activity_web` | `:core:navigation` | `RouterPath.Common.ACTIVITY_WEB` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
-| `/home/fragment_chat` | `:module_home:api` | `HomeRoutes.FRAGMENT_CHAT` | `module_home/api/src/main/java/com/zhangyt/module/home/api/HomeRoutes.kt` |
-| `/home/fragment_contacts` | `:module_home:api` | `HomeRoutes.FRAGMENT_CONTACTS` | `module_home/api/src/main/java/com/zhangyt/module/home/api/HomeRoutes.kt` |
-| `/home/fragment_discover` | `:module_home:api` | `HomeRoutes.FRAGMENT_DISCOVER` | `module_home/api/src/main/java/com/zhangyt/module/home/api/HomeRoutes.kt` |
-| `/login/activity_login` | `:module_login:api` | `LoginRoutes.ACTIVITY_LOGIN` | `module_login/api/src/main/java/com/zhangyt/module/login/api/LoginRoutes.kt` |
-| `/main/activity_main` | `:module_home:api` | `HomeRoutes.ACTIVITY_MAIN` | `module_home/api/src/main/java/com/zhangyt/module/home/api/HomeRoutes.kt` |
-| `/mine/fragment_mine` | `:module_mine:api` | `MineRoutes.FRAGMENT_MINE` | `module_mine/api/src/main/java/com/zhangyt/module/mine/api/MineRoutes.kt` |
-| `/ota/activity_ota` | `:module_ota:api` | `OtaRoutes.ACTIVITY_OTA` | `module_ota/api/src/main/java/com/zhangyt/module/ota/api/OtaRoutes.kt` |
+| `/home/fragment_chat` | `:core:navigation` | `RouterPath.Home.FRAGMENT_CHAT` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/home/fragment_contacts` | `:core:navigation` | `RouterPath.Home.FRAGMENT_CONTACTS` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/home/fragment_discover` | `:core:navigation` | `RouterPath.Home.FRAGMENT_DISCOVER` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/login/activity_login` | `:core:navigation` | `RouterPath.Login.ACTIVITY_LOGIN` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/main/activity_main` | `:core:navigation` | `RouterPath.Home.ACTIVITY_MAIN` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/mine/fragment_mine` | `:core:navigation` | `RouterPath.Mine.FRAGMENT_MINE` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
+| `/ota/activity_ota` | `:core:navigation` | `RouterPath.Ota.ACTIVITY_OTA` | `core/navigation/src/main/java/com/zhangyt/common/router/RouterPath.kt` |
 
 ## Android 资源
 
@@ -493,19 +447,19 @@
 | `gray_btn_press` | `color` | `:core:designsystem` | `core/designsystem/src/main/res/values/colors.xml` |
 | `gray_text` | `color` | `:core:designsystem` | `core/designsystem/src/main/res/values/colors.xml` |
 | `green_unClickable` | `color` | `:core:designsystem` | `core/designsystem/src/main/res/values/colors.xml` |
-| `home_bg_unread` | `drawable` | `:module_home:impl` | `module_home/impl/src/main/res/drawable/home_bg_unread.xml` |
-| `home_fragment_chat` | `layout` | `:module_home:impl` | `module_home/impl/src/main/res/layout/home_fragment_chat.xml` |
-| `home_fragment_contacts` | `layout` | `:module_home:impl` | `module_home/impl/src/main/res/layout/home_fragment_contacts.xml` |
-| `home_fragment_discover` | `layout` | `:module_home:impl` | `module_home/impl/src/main/res/layout/home_fragment_discover.xml` |
-| `home_item_chat` | `layout` | `:module_home:impl` | `module_home/impl/src/main/res/layout/home_item_chat.xml` |
-| `home_tab_chat` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values-en/strings.xml` |
-| `home_tab_chat` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values/strings.xml` |
-| `home_tab_contacts` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values-en/strings.xml` |
-| `home_tab_contacts` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values/strings.xml` |
-| `home_tab_discover` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values-en/strings.xml` |
-| `home_tab_discover` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values/strings.xml` |
-| `home_tab_mine` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values-en/strings.xml` |
-| `home_tab_mine` | `string` | `:module_home:impl` | `module_home/impl/src/main/res/values/strings.xml` |
+| `home_bg_unread` | `drawable` | `:module_home` | `module_home/src/main/res/drawable/home_bg_unread.xml` |
+| `home_fragment_chat` | `layout` | `:module_home` | `module_home/src/main/res/layout/home_fragment_chat.xml` |
+| `home_fragment_contacts` | `layout` | `:module_home` | `module_home/src/main/res/layout/home_fragment_contacts.xml` |
+| `home_fragment_discover` | `layout` | `:module_home` | `module_home/src/main/res/layout/home_fragment_discover.xml` |
+| `home_item_chat` | `layout` | `:module_home` | `module_home/src/main/res/layout/home_item_chat.xml` |
+| `home_tab_chat` | `string` | `:module_home` | `module_home/src/main/res/values-en/strings.xml` |
+| `home_tab_chat` | `string` | `:module_home` | `module_home/src/main/res/values/strings.xml` |
+| `home_tab_contacts` | `string` | `:module_home` | `module_home/src/main/res/values-en/strings.xml` |
+| `home_tab_contacts` | `string` | `:module_home` | `module_home/src/main/res/values/strings.xml` |
+| `home_tab_discover` | `string` | `:module_home` | `module_home/src/main/res/values-en/strings.xml` |
+| `home_tab_discover` | `string` | `:module_home` | `module_home/src/main/res/values/strings.xml` |
+| `home_tab_mine` | `string` | `:module_home` | `module_home/src/main/res/values-en/strings.xml` |
+| `home_tab_mine` | `string` | `:module_home` | `module_home/src/main/res/values/strings.xml` |
 | `ic_launcher` | `mipmap` | `:app` | `app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml` |
 | `ic_launcher` | `mipmap` | `:app` | `app/src/main/res/mipmap-hdpi/ic_launcher.png` |
 | `ic_launcher` | `mipmap` | `:app` | `app/src/main/res/mipmap-mdpi/ic_launcher.png` |
@@ -523,33 +477,33 @@
 | `icon_error` | `drawable` | `:core:designsystem` | `core/designsystem/src/main/res/drawable/icon_error.png` |
 | `labelTextColor` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
 | `labelTextSize` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
-| `login_activity_login` | `layout` | `:module_login:impl` | `module_login/impl/src/main/res/layout/login_activity_login.xml` |
-| `login_bg_button` | `drawable` | `:module_login:impl` | `module_login/impl/src/main/res/drawable/login_bg_button.xml` |
-| `login_bg_input` | `drawable` | `:module_login:impl` | `module_login/impl/src/main/res/drawable/login_bg_input.xml` |
-| `login_btn_login` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values-en/strings.xml` |
-| `login_btn_login` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values/strings.xml` |
-| `login_hint_account` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values-en/strings.xml` |
-| `login_hint_account` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values/strings.xml` |
-| `login_hint_password` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values-en/strings.xml` |
-| `login_hint_password` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values/strings.xml` |
-| `login_tip` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values-en/strings.xml` |
-| `login_tip` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values/strings.xml` |
-| `login_welcome` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values-en/strings.xml` |
-| `login_welcome` | `string` | `:module_login:impl` | `module_login/impl/src/main/res/values/strings.xml` |
+| `login_activity_login` | `layout` | `:module_login` | `module_login/src/main/res/layout/login_activity_login.xml` |
+| `login_bg_button` | `drawable` | `:module_login` | `module_login/src/main/res/drawable/login_bg_button.xml` |
+| `login_bg_input` | `drawable` | `:module_login` | `module_login/src/main/res/drawable/login_bg_input.xml` |
+| `login_btn_login` | `string` | `:module_login` | `module_login/src/main/res/values-en/strings.xml` |
+| `login_btn_login` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
+| `login_hint_account` | `string` | `:module_login` | `module_login/src/main/res/values-en/strings.xml` |
+| `login_hint_account` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
+| `login_hint_password` | `string` | `:module_login` | `module_login/src/main/res/values-en/strings.xml` |
+| `login_hint_password` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
+| `login_tip` | `string` | `:module_login` | `module_login/src/main/res/values-en/strings.xml` |
+| `login_tip` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
+| `login_welcome` | `string` | `:module_login` | `module_login/src/main/res/values-en/strings.xml` |
+| `login_welcome` | `string` | `:module_login` | `module_login/src/main/res/values/strings.xml` |
 | `max` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
-| `mine_check_update` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values-en/strings.xml` |
-| `mine_check_update` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values/strings.xml` |
-| `mine_fragment_mine` | `layout` | `:module_mine:impl` | `module_mine/impl/src/main/res/layout/mine_fragment_mine.xml` |
-| `mine_language_switch` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values-en/strings.xml` |
-| `mine_language_switch` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values/strings.xml` |
-| `mine_logout` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values-en/strings.xml` |
-| `mine_logout` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values/strings.xml` |
-| `mine_theme_switch` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values-en/strings.xml` |
-| `mine_theme_switch` | `string` | `:module_mine:impl` | `module_mine/impl/src/main/res/values/strings.xml` |
+| `mine_check_update` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_check_update` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_fragment_mine` | `layout` | `:module_mine` | `module_mine/src/main/res/layout/mine_fragment_mine.xml` |
+| `mine_language_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_language_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_logout` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_logout` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
+| `mine_theme_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values-en/strings.xml` |
+| `mine_theme_switch` | `string` | `:module_mine` | `module_mine/src/main/res/values/strings.xml` |
 | `network_security_config` | `xml` | `:app` | `app/src/main/res/xml/network_security_config.xml` |
 | `nodeRadius` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
-| `ota_activity_update` | `layout` | `:module_ota:impl` | `module_ota/impl/src/main/res/layout/ota_activity_update.xml` |
-| `ota_file_paths` | `xml` | `:module_ota:impl` | `module_ota/impl/src/main/res/xml/ota_file_paths.xml` |
+| `ota_activity_update` | `layout` | `:module_ota` | `module_ota/src/main/res/layout/ota_activity_update.xml` |
+| `ota_file_paths` | `xml` | `:module_ota` | `module_ota/src/main/res/xml/ota_file_paths.xml` |
 | `primaryNodeColor` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
 | `progress` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
 | `progressBarHeight` | `attr` | `:core:designsystem` | `core/designsystem/src/main/res/values/atts.xml` |
@@ -570,10 +524,10 @@
 
 ## 独立组件构建
 
-- `./gradlew :module_home:impl:assembleDebug -Pstandalone=home`
+- `./gradlew :module_home:assembleDebug -Pstandalone=home`
 
-- `./gradlew :module_login:impl:assembleDebug -Pstandalone=login`
+- `./gradlew :module_login:assembleDebug -Pstandalone=login`
 
-- `./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine`
+- `./gradlew :module_mine:assembleDebug -Pstandalone=mine`
 
-- `./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota`
+- `./gradlew :module_ota:assembleDebug -Pstandalone=ota`

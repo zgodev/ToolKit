@@ -38,8 +38,8 @@ object ArchitectureRules {
         "验证命令",
     )
 
-    private val standaloneImplementationEdges = mapOf(
-        (":module_mine:impl" to ":module_ota:impl") to "mine",
+    private val standaloneFeatureEdges = mapOf(
+        (":module_mine" to ":module_ota") to "mine",
     )
 
     fun validate(snapshot: ArchitectureSnapshot): List<ArchitectureViolation> = buildList {
@@ -56,22 +56,14 @@ object ArchitectureRules {
                         )
                     )
 
-                    edge.from.matches(Regex(":module_[^:]+:api")) && edge.target.endsWith(":impl") -> add(
-                        ArchitectureViolation(
-                            ruleId = "ARCH_DEP_API_IMPL",
-                            location = edge.from,
-                            message = "feature api 不能依赖实现模块：${edge.from} → ${edge.target}。只保留稳定契约。",
-                        )
-                    )
-
-                    edge.from.matches(Regex(":module_[^:]+:impl")) &&
-                        edge.target.matches(Regex(":module_[^:]+:impl")) &&
+                    moduleType(edge.from) == ModuleType.FEATURE &&
+                        moduleType(edge.target) == ModuleType.FEATURE &&
                         edge.from != edge.target &&
                         !isAllowedStandaloneEdge(edge, snapshot.standaloneFeature) -> add(
                         ArchitectureViolation(
-                            ruleId = "ARCH_DEP_IMPL_IMPL",
+                            ruleId = "ARCH_DEP_FEATURE_FEATURE",
                             location = edge.from,
-                            message = "feature 实现不能直接依赖其他 feature 实现：${edge.from} → ${edge.target}。改为依赖对方 api，由 app 组装。",
+                            message = "业务模块不能直接依赖其他业务模块：${edge.from} → ${edge.target}。跨业务跳转使用 core:navigation 路由契约，由 app 组装实现。",
                         )
                     )
 
@@ -79,7 +71,7 @@ object ArchitectureRules {
                         ArchitectureViolation(
                             ruleId = "ARCH_DEP_DIRECTION",
                             location = edge.from,
-                            message = "依赖方向不符合模块类型白名单：${edge.from} → ${edge.target}。请通过 feature api 协作，或把能力放入职责匹配的 core/app 组装层。",
+                            message = "依赖方向不符合模块类型白名单：${edge.from} → ${edge.target}。请通过 core 路由或稳定能力协作，或由 app 组装。",
                         )
                     )
                 }
@@ -94,6 +86,20 @@ object ArchitectureRules {
                 )
             )
         }
+
+        snapshot.modulePaths
+            .distinct()
+            .sorted()
+            .filter { it.matches(Regex(":module_[^:]+:.+")) }
+            .forEach { modulePath ->
+                add(
+                    ArchitectureViolation(
+                        ruleId = "ARCH_FEATURE_NESTED_MODULE",
+                        location = modulePath,
+                        message = "业务模块必须使用单层 :module_<name> 结构，不再创建 api/impl 等子模块。",
+                    )
+                )
+            }
 
         snapshot.modulePaths.distinct().sorted().forEach { modulePath ->
             val readme = snapshot.readmes[modulePath]
@@ -172,8 +178,7 @@ object ArchitectureRules {
         owner == ":app" -> "app_"
         owner == ":core:designsystem" -> "common_"
         owner == ":core:web" -> "web_"
-        owner.matches(Regex(":module_[^:]+:(api|impl)")) ->
-            owner.substringAfter(":module_").substringBefore(':') + "_"
+        owner.matches(Regex(":module_[^:]+")) -> owner.removePrefix(":module_") + "_"
         else -> null
     }
 
@@ -185,26 +190,23 @@ object ArchitectureRules {
             ModuleType.APP -> target in setOf(
                 ModuleType.CORE,
                 ModuleType.LEGACY,
-                ModuleType.FEATURE_API,
-                ModuleType.FEATURE_IMPL,
+                ModuleType.FEATURE,
             )
             ModuleType.CORE -> target == ModuleType.CORE
             ModuleType.LEGACY -> target == ModuleType.CORE || target == ModuleType.LEGACY
-            ModuleType.FEATURE_API -> target == ModuleType.CORE || target == ModuleType.FEATURE_API
-            ModuleType.FEATURE_IMPL -> target == ModuleType.CORE || target == ModuleType.FEATURE_API
+            ModuleType.FEATURE -> target == ModuleType.CORE
             ModuleType.OTHER -> false
         }
     }
 
     private fun isAllowedStandaloneEdge(edge: ProjectDependencyEdge, standaloneFeature: String?): Boolean =
-        standaloneImplementationEdges[edge.from to edge.target]?.let { it == standaloneFeature } == true
+        standaloneFeatureEdges[edge.from to edge.target]?.let { it == standaloneFeature } == true
 
     private fun moduleType(path: String): ModuleType = when {
         path == ":app" -> ModuleType.APP
         path.startsWith(":core:") -> ModuleType.CORE
         path.startsWith(":legacy:") -> ModuleType.LEGACY
-        path.matches(Regex(":module_[^:]+:api")) -> ModuleType.FEATURE_API
-        path.matches(Regex(":module_[^:]+:impl")) -> ModuleType.FEATURE_IMPL
+        path.matches(Regex(":module_[^:]+")) -> ModuleType.FEATURE
         else -> ModuleType.OTHER
     }
 
@@ -212,8 +214,7 @@ object ArchitectureRules {
         APP,
         CORE,
         LEGACY,
-        FEATURE_API,
-        FEATURE_IMPL,
+        FEATURE,
         OTHER,
     }
 }

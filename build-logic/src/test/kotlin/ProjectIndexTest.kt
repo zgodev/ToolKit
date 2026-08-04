@@ -7,17 +7,17 @@ class ProjectIndexTest {
     @Test
     fun `render sorts every section deterministically`() {
         val module = ModuleIndexEntry(
-            path = ":module_home:api",
-            kind = "feature-api",
-            namespace = "com.zhangyt.module.home.api",
-            summary = "首页跨模块路由契约。",
-            readmePath = "module_home/api/README.md",
+            path = ":module_home",
+            kind = "feature",
+            namespace = "com.zhangyt.module.home",
+            summary = "首页业务模块。",
+            readmePath = "module_home/README.md",
             dependencies = listOf(
                 DependencyIndexEntry("implementation", ":core:navigation"),
                 DependencyIndexEntry("api", ":core:model"),
             ),
             publicEntries = listOf(
-                PublicEntryIndex("HomeRoutes", "module_home/api/src/main/java/HomeRoutes.kt"),
+                PublicEntryIndex("ChatFragment", "module_home/src/main/java/ChatFragment.kt"),
             ),
         )
         val snapshot = ProjectIndexSnapshot(
@@ -32,14 +32,14 @@ class ProjectIndexTest {
                 ),
             ),
             resources = listOf(
-                ResourceIndexEntry(":module_home:impl", "layout", "home_fragment_chat", "z.xml"),
+                ResourceIndexEntry(":module_home", "layout", "home_fragment_chat", "z.xml"),
                 ResourceIndexEntry(":app", "layout", "app_activity_main", "a.xml"),
                 ResourceIndexEntry(":app", "string", "app_name", "values/strings.xml"),
                 ResourceIndexEntry(":app", "string", "app_name", "values-en/strings.xml"),
             ),
             routes = listOf(
-                RouteIndexEntry(":module_home:api", "/home/fragment_chat", "HomeRoutes.FRAGMENT_CHAT", "b.kt"),
-                RouteIndexEntry(":app", "/main/activity_main", "HomeRoutes.ACTIVITY_MAIN", "a.kt"),
+                RouteIndexEntry(":core:navigation", "/home/fragment_chat", "RouterPath.Home.FRAGMENT_CHAT", "b.kt"),
+                RouteIndexEntry(":core:navigation", "/main/activity_main", "RouterPath.Home.ACTIVITY_MAIN", "a.kt"),
                 RouteIndexEntry(":app", "/same/path", "Routes.SAME", "z.kt"),
                 RouteIndexEntry(":app", "/same/path", "Routes.SAME", "a.kt"),
             ),
@@ -58,16 +58,18 @@ class ProjectIndexTest {
 
         assertEquals(first, second)
         assertTrue(first.endsWith("\n"))
-        assertTrue(first.indexOf(":app") < first.indexOf(":module_home:api"))
+        assertTrue(first.indexOf(":app") < first.indexOf(":module_home"))
         assertTrue(first.indexOf("app_activity_main") < first.indexOf("home_fragment_chat"))
         assertTrue(first.indexOf("/home/fragment_chat") < first.indexOf("/main/activity_main"))
         assertTrue(first.indexOf("standalone=home") < first.indexOf("standalone=login"))
+        assertTrue(first.contains(":module_home:assembleDebug -Pstandalone=home"))
+        assertTrue(!first.contains(":module_home:impl"))
     }
 
     @Test
     fun `render removes duplicate resources and routes`() {
         val resource = ResourceIndexEntry(":app", "layout", "app_activity_main", "app.xml")
-        val route = RouteIndexEntry(":app", "/main/activity_main", "HomeRoutes.ACTIVITY_MAIN", "MainActivity.kt")
+        val route = RouteIndexEntry(":app", "/main/activity_main", "RouterPath.Home.ACTIVITY_MAIN", "MainActivity.kt")
         val rendered = ProjectIndexRenderer.render(
             ProjectIndexSnapshot(
                 resources = listOf(resource, resource),

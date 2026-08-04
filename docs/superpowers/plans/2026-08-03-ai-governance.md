@@ -1,5 +1,7 @@
 # ToolKit AI Development Governance Implementation Plan
 
+> 历史实施计划：其中的 feature api/impl 路径已于 2026-08-04 被 `2026-08-04-single-feature-modules.md` 取代，不应按旧路径再次执行。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 建立模块 README、可生成的项目索引、统一开发规范和可自动失败的架构守卫，让 Codex 在扩展 ToolKit 时先复用、遵守边界并保持命名一致。

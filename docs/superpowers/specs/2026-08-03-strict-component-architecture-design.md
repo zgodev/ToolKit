@@ -1,5 +1,7 @@
 # ToolKit 严格组件化架构设计
 
+> 已于 2026-08-04 被 `2026-08-04-single-feature-modules-design.md` 取代；本文仅保留历史决策背景，不再作为当前模块结构规范。
+
 ## 目标
 
 将 ToolKit 从“业务模块依赖全量 `lib_common`”的示例工程，重构为可长期扩展的大型 Android 工程骨架：依赖方向单向、业务组件具有 `api/impl` 边界、构建约定集中管理，并支持通过 `-Pstandalone=<feature>` 独立运行单个业务组件。

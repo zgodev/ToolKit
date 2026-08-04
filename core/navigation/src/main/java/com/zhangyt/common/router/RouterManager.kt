@@ -10,7 +10,7 @@ import com.alibaba.android.arouter.launcher.ARouter
  *
  * 示例：
  * ```
- * RouterManager.start(LoginRoutes.ACTIVITY_LOGIN)
+ * RouterManager.start(RouterPath.Login.ACTIVITY_LOGIN)
  * RouterManager.start(RouterPath.Common.ACTIVITY_WEB) {
  *     withString("url", "https://www.baidu.com")
  * }

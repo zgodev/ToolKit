@@ -40,12 +40,8 @@ dependencies {
     implementation project(':core:designsystem')
     implementation project(':core:ui')
 
-    implementation project(':module_login:api')
-    implementation project(':module_login:impl')
-    implementation project(':module_home:api')
-    implementation project(':module_home:impl')
-    implementation project(':module_mine:api')
-    implementation project(':module_mine:impl')
-    implementation project(':module_ota:api')
-    implementation project(':module_ota:impl')
+    implementation project(':module_login')
+    implementation project(':module_home')
+    implementation project(':module_mine')
+    implementation project(':module_ota')
 }

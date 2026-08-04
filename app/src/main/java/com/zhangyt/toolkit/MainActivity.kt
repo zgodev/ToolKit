@@ -4,8 +4,7 @@ import androidx.fragment.app.Fragment
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.zhangyt.common.base.BaseActivity
 import com.zhangyt.common.router.RouterManager
-import com.zhangyt.module.home.api.HomeRoutes
-import com.zhangyt.module.mine.api.MineRoutes
+import com.zhangyt.common.router.RouterPath
 import com.zhangyt.toolkit.databinding.AppActivityMainBinding
 
 /**
@@ -15,15 +14,15 @@ import com.zhangyt.toolkit.databinding.AppActivityMainBinding
  * - 使用 FragmentManager 的 show/hide，避免重复创建，保持状态。
  * - 底部 BottomNavigationView 控制切换。
  */
-@Route(path = HomeRoutes.ACTIVITY_MAIN)
+@Route(path = RouterPath.Home.ACTIVITY_MAIN)
 class MainActivity : BaseActivity<AppActivityMainBinding>() {
 
     private val fragments: List<Fragment> by lazy {
         listOf(
-            HomeRoutes.FRAGMENT_CHAT,
-            HomeRoutes.FRAGMENT_CONTACTS,
-            HomeRoutes.FRAGMENT_DISCOVER,
-            MineRoutes.FRAGMENT_MINE,
+            RouterPath.Home.FRAGMENT_CHAT,
+            RouterPath.Home.FRAGMENT_CONTACTS,
+            RouterPath.Home.FRAGMENT_DISCOVER,
+            RouterPath.Mine.FRAGMENT_MINE,
         ).map(::requiredFragment)
     }
     private var currentIndex = 0

@@ -4,7 +4,7 @@
 
 ## 模块职责
 
-提供统一跳转入口；业务路由常量由各 feature api 声明，避免跨模块引用 impl 类型。
+提供统一跳转入口和按业务域分组的字符串路由契约，避免业务模块互相依赖实现类型。
 
 ## 模块类型
 
@@ -12,7 +12,7 @@ core（Android navigation library）。
 
 ## 依赖规则
 
-可暴露 ARouter 与 Fragment 导航所需 API；禁止依赖 feature impl，通常也不依赖 feature api。
+可暴露 ARouter 与 Fragment 导航所需 API；禁止依赖任何业务模块。
 
 ## 目录结构
 
@@ -25,7 +25,7 @@ core（Android navigation library）。
 
 ## 新代码放置
 
-业务路径放在所属 `module_xxx:api` 的 `XxxRoutes`；只有真正跨业务的导航能力才扩展本模块。
+跨模块业务路径放在 `RouterPath` 对应业务分组；业务模块内部、不参与跨模块跳转的路径不必公开。
 
 ## 验证命令
 

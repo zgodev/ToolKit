@@ -23,6 +23,8 @@ build logic（Gradle included build）。
 
 `toolkit.android.application`、`toolkit.android.library`、`toolkit.android.feature`、`toolkit.kotlin.library`、`toolkit.android.hilt`、`toolkit.android.arouter`、`toolkit.architecture-guard`。
 
+其中 `toolkit.android.feature` 应用于单层 `:module_<name>`，根据 `-Pstandalone=<name>` 在 Android Library 与独立 Application 之间切换。
+
 ## 新代码放置
 
 跨多个模块重复的构建配置才进入约定插件；可测试的规则优先写成纯 Kotlin，再由 Gradle task 采集数据调用。

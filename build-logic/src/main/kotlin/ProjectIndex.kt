@@ -129,7 +129,7 @@ object ProjectIndexRenderer {
             .sorted()
             .forEach { feature ->
                 appendLine()
-                appendLine("- `./gradlew :module_${escape(feature)}:impl:assembleDebug -Pstandalone=${escape(feature)}`")
+                appendLine("- `./gradlew :module_${escape(feature)}:assembleDebug -Pstandalone=${escape(feature)}`")
             }
     }
 

@@ -88,9 +88,9 @@ internal object ProjectGovernanceCollector {
         val resources = androidModules.flatMap { collectResources(rootProject, it) }
         val routes = androidModules.flatMap { collectRoutes(rootProject, it) }
         val standalone = androidModules
-            .filter { it.path.matches(Regex(":module_[^:]+:impl")) }
+            .filter { it.path.matches(Regex(":module_[^:]+")) }
             .filter { it.projectDir.resolve("src/standalone/AndroidManifest.xml").isFile }
-            .map { it.path.substringAfter(":module_").substringBefore(':') }
+            .map { it.path.removePrefix(":module_") }
 
         return ProjectIndexSnapshot(
             modules = modules,
@@ -272,8 +272,7 @@ internal object ProjectGovernanceCollector {
         path == ":app" -> "app"
         path.startsWith(":core:") -> "core"
         path.startsWith(":legacy:") -> "legacy"
-        path.endsWith(":api") -> "feature-api"
-        path.endsWith(":impl") -> "feature-impl"
+        path.matches(Regex(":module_[^:]+")) -> "feature"
         else -> "module"
     }
 
@@ -289,7 +288,7 @@ internal object ProjectGovernanceCollector {
             .distinct()
 
     private fun isStandaloneAssemblyDependency(from: String, dependency: DependencyIndexEntry): Boolean =
-        from == ":module_mine:impl" && dependency.target == ":module_ota:impl"
+        from == ":module_mine" && dependency.target == ":module_ota"
 
     private fun parsePublicDeclarations(source: File): List<String> {
         var braceDepth = 0

@@ -8,11 +8,11 @@
 
 ## 模块类型
 
-app（正式 Application 与 feature impl 聚合层）。
+app（正式 Application 与业务模块聚合层）。
 
 ## 依赖规则
 
-允许依赖 `core:*`、各 feature api/impl；业务能力不得反向依赖本模块。
+允许依赖 `core:*`、`legacy:*` 和各 `module_*`；业务能力不得反向依赖本模块。
 
 ## 目录结构
 

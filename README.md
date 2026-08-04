@@ -13,17 +13,17 @@ ToolKit 是面向中大型 Android 项目的严格组件化骨架，采用 Kotli
 
 ```text
 app                         正式应用组装、启动与主导航
-├── module_login:api/impl   登录契约与实现
-├── module_home:api/impl    首页契约与实现
-├── module_mine:api/impl    我的契约与实现
-└── module_ota:api/impl     OTA 契约与实现
+├── module_login            登录业务与独立运行入口
+├── module_home             首页业务与独立运行入口
+├── module_mine             我的业务与独立运行入口
+└── module_ota              OTA 业务与独立运行入口
 
 core:*                      单一职责现代基础能力
 legacy:*                    只减不增的历史兼容隔离区
 build-logic                 Gradle 约定、独立组件与架构治理
 ```
 
-依赖红线：core 不依赖业务；feature api 不依赖 impl；feature impl 之间只通过对方 api 协作；app 是正式应用的 impl 聚合层。完整清单见项目索引。
+依赖红线：core 不依赖业务；feature 默认只依赖 core，不直接依赖其他 feature；跨业务跳转复用 `core:navigation` 路由契约；app 是正式应用聚合层。完整清单见项目索引。
 
 ## 构建与治理
 
@@ -43,10 +43,10 @@ build-logic                 Gradle 约定、独立组件与架构治理
 ## 独立组件 APK
 
 ```bash
-./gradlew :module_login:impl:assembleDebug -Pstandalone=login --offline
-./gradlew :module_home:impl:assembleDebug -Pstandalone=home --offline
-./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine --offline
-./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota --offline
+./gradlew :module_login:assembleDebug -Pstandalone=login --offline
+./gradlew :module_home:assembleDebug -Pstandalone=home --offline
+./gradlew :module_mine:assembleDebug -Pstandalone=mine --offline
+./gradlew :module_ota:assembleDebug -Pstandalone=ota --offline
 ```
 
 支持值仅为 `login/home/mine/ota`，未知值会在配置阶段失败。`mine` 独立包按业务需要同时组装 OTA 实现。

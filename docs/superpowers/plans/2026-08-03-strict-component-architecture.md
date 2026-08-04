@@ -1,5 +1,7 @@
 # ToolKit Strict Component Architecture Implementation Plan
 
+> 历史实施计划：其 api/impl 目标结构已于 2026-08-04 被 `2026-08-04-single-feature-modules.md` 取代，不应再次执行。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 把 ToolKit 重构为具有 core/legacy/feature api-impl 边界、Convention Plugin 和单 feature 独立 APK 能力的大型 Android 工程骨架。

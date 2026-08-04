@@ -5,20 +5,18 @@
 ## 1. 架构目标与依赖方向
 
 ```text
-app ───────────────► feature impl ─► own api
- │                       │          other feature api
- │                       └────────► core
- └───────────────────────────────► core
+app ───────────────► feature ─────────► core
+ │                                      ▲
+ └──────────────────────────────────────┘
 
 legacy ─► 必需三方库或其他 legacy
 core    -X-► feature / legacy
-api     -X-► any impl
-feature -X-► other feature impl
+feature -X-► other feature
 ```
 
 `app` 只做正式应用组装、启动和顶层导航；业务实现由 feature 持有。`core:*` 按单一职责提供基础能力，不知道任何业务模块。`legacy:*` 是只减不增的兼容隔离区。
 
-feature 拆为 api 与 impl：api 是其他模块可编译依赖的稳定契约，impl 是可替换的内部实现。页面跳转使用 `RouterManager` 与目标 feature api 中的 routes，不通过类引用穿透边界。
+每个 feature 使用单一 `module_xxx` Gradle 模块，不默认建立 api/impl 子模块。跨业务页面跳转使用 `RouterManager` 与 `core:navigation` 的 `RouterPath`，不通过类引用或业务模块项目依赖穿透边界。
 
 ## 2. AI 与开发者定位流程
 
@@ -33,8 +31,8 @@ feature 拆为 api 与 impl：api 是其他模块可编译依赖的稳定契约�
 
 ## 3. 代码归属决策
 
-- 只服务一个页面或流程：放所属 feature impl。
-- 需要被其他模块编译依赖的稳定业务契约：放所属 feature api。
+- 只服务一个页面或流程：放所属 feature。
+- 跨业务字符串路由：放 `core:navigation` 的 `RouterPath` 对应分组。
 - 两个以上模块稳定复用、与业务无关：放职责匹配的单一 core。
 - 应用启动或多个 feature 的组合：放 app；可被 standalone 复用的进程初始化放 `core:startup`。
 - 历史接口兼容修复：留在 legacy；现代替代实现不要继续进入 legacy。
@@ -46,13 +44,13 @@ feature 拆为 api 与 impl：api 是其他模块可编译依赖的稳定契约�
 
 以 `module_order` 为例：
 
-1. 创建 `module_order/api` 与 `module_order/impl`，在 `settings.gradle` 注册。
-2. api 使用 `toolkit.android.library`，只放 `OrderRoutes`、跨模块接口和必要稳定模型。
-3. impl 使用 `toolkit.android.feature`；路由使用 `toolkit.android.arouter`，注入使用 `toolkit.android.hilt`。
-4. impl 依赖自身 api、所需 core 和其他 feature api，不依赖其他 impl。
-5. 在 `app` 中依赖 api/impl 完成正式应用组装。
+1. 创建单一 `module_order`，在 `settings.gradle` 注册；不要默认创建 api/impl 子模块。
+2. 使用 `toolkit.android.feature`；路由使用 `toolkit.android.arouter`，注入使用 `toolkit.android.hilt`。
+3. 业务实现、内部接口与模型放在模块自己的 `src/main`；真正稳定的跨模块模型评估进入 `core:model`。
+4. 跨业务路由添加到 `RouterPath.Order`，feature 默认只依赖所需 core，不依赖其他 feature。
+5. 在 `app` 中依赖 `module_order` 完成正式应用组装。
 6. 需要独立 APK 时，在 build-logic 的 feature 支持列表登记，提供 `src/standalone/AndroidManifest.xml` 与 Launcher/Application。
-7. 为 api 和 impl 编写标准模块 README，补路由契约测试、业务测试和 app/standalone 构建验证。
+7. 为模块编写一个标准 README，补路由契约测试、业务测试和 app/standalone 构建验证。
 8. 运行 `generateProjectIndex`，再运行两个治理校验任务。
 
 ## 5. Package、文件与类型命名
@@ -63,7 +61,7 @@ feature 拆为 api 与 impl：api 是其他模块可编译依赖的稳定契约�
 - 不新增裸 `Utils`、`Common`、`Helper`、`Manager` 或 `Base`。按能力命名，例如 `DateFormatter`、`KeyboardController`、`OtaDownloadCoordinator`。
 - 布尔值使用 `is`、`has`、`can` 前缀；函数名表达动作和结果，不用 `handleData`、`doWork` 等模糊名称。
 - DTO 对应传输协议，Entity 对应持久化，Domain Model 表达业务，UiModel/UiState 服务渲染；跨层转换在边界完成。
-- 对外可见面最小化：能 `private`/`internal` 就不公开，跨模块入口集中在 api 或模块 README 标出的公共能力。
+- 对外可见面最小化：能 `private`/`internal` 就不公开，跨模块入口集中在 core 契约或模块 README 标出的公共能力。
 
 ## 6. Android 资源规范
 
@@ -140,13 +138,13 @@ class OrderRepository @Inject constructor(
 
 ## 12. 独立组件运行
 
-`-Pstandalone=<feature>` 将目标 impl 切换为 Application，使用独立 Manifest、Launcher 和 applicationId。支持值为 `login`、`home`、`mine`、`ota`；未知值配置阶段失败。`mine` standalone 因页面可进入 OTA，构建分支会额外组装 OTA impl，这不是普通 feature→impl 依赖许可。
+`-Pstandalone=<feature>` 将目标 feature 切换为 Application，使用独立 Manifest、Launcher 和 applicationId。支持值为 `login`、`home`、`mine`、`ota`；未知值配置阶段失败。`mine` standalone 因页面可进入 OTA，构建分支会额外组装 OTA，这不是普通 feature→feature 依赖许可。
 
 ```bash
-./gradlew :module_login:impl:assembleDebug -Pstandalone=login --offline
-./gradlew :module_home:impl:assembleDebug -Pstandalone=home --offline
-./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine --offline
-./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota --offline
+./gradlew :module_login:assembleDebug -Pstandalone=login --offline
+./gradlew :module_home:assembleDebug -Pstandalone=home --offline
+./gradlew :module_mine:assembleDebug -Pstandalone=mine --offline
+./gradlew :module_ota:assembleDebug -Pstandalone=ota --offline
 ```
 
 独立构建通过只证明组件可单独编译打包；有外部系统能力时仍需安装运行验证。
@@ -170,7 +168,7 @@ class OrderRepository @Inject constructor(
 
 - 修改归属是否唯一正确，是否复用了现有类型和资源。
 - 是否引入同义类、同义资源、重复状态源或无调用方抽象。
-- core/api/impl/app 依赖方向是否正确，是否通过路由跨 feature。
+- core/feature/app 依赖方向是否正确，是否通过统一路由跨 feature。
 - UI 状态、错误、协程取消、生命周期和敏感日志是否安全。
 - 新公共入口和资源是否已进入生成索引，模块 README 是否仍真实。
 - 测试是否验证行为而非实现细节，编译验证与真机验收边界是否说明。
@@ -182,9 +180,9 @@ class OrderRepository @Inject constructor(
 ./gradlew -p build-logic build --offline
 ./gradlew verifyArchitecture verifyProjectIndex --offline
 ./gradlew testDebugUnitTest :app:assembleDebug --offline
-./gradlew :module_login:impl:assembleDebug -Pstandalone=login --offline
-./gradlew :module_home:impl:assembleDebug -Pstandalone=home --offline
-./gradlew :module_mine:impl:assembleDebug -Pstandalone=mine --offline
-./gradlew :module_ota:impl:assembleDebug -Pstandalone=ota --offline
+./gradlew :module_login:assembleDebug -Pstandalone=login --offline
+./gradlew :module_home:assembleDebug -Pstandalone=home --offline
+./gradlew :module_mine:assembleDebug -Pstandalone=mine --offline
+./gradlew :module_ota:assembleDebug -Pstandalone=ota --offline
 git diff --check
 ```

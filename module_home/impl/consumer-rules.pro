@@ -1,3 +1,0 @@
--keep class com.zhangyt.module.home.model.** { *; }
--keep class com.zhangyt.module.home.api.** { *; }
--keep class com.zhangyt.module.home.fragment.** { *; }

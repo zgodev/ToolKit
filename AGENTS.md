@@ -14,7 +14,7 @@
 
 ```bash
 grep -n "关键词" docs/PROJECT_INDEX.md
-grep -n "公共入口" module_xxx/impl/README.md
+grep -n "公共入口" module_xxx/README.md
 ```
 
 ## 项目定位与工具链
@@ -32,7 +32,7 @@ ToolKit 是面向中大型 Android 项目的严格组件化骨架。Kotlin 为�
 
 1. 项目索引是否已有同语义入口或资源。
 2. 当前模块现有文件能否在不混淆职责的前提下扩展。
-3. 所属 feature api 是否已有跨模块契约。
+3. `core:navigation` 或 `core:model` 是否已有跨模块契约。
 4. `core:designsystem`、`core:ui`、`core:network`、`core:utils` 等是否已有能力。
 5. `legacy:*` 只可兼容调用，不把新实现继续堆入 legacy。
 
@@ -42,21 +42,20 @@ ToolKit 是面向中大型 Android 项目的严格组件化骨架。Kotlin 为�
 
 ## 模块边界
 
-- `app`：正式应用壳、启动与跨 feature 编排；常规完整应用唯一的 feature impl 聚合层。
+- `app`：正式应用壳、启动与跨 feature 编排；常规完整应用唯一的业务模块聚合层。
 - `core:*`：单一职责基础能力，绝不依赖 `module_*`。
 - `legacy:*`：历史兼容隔离区；core 不得反向依赖 legacy。
-- `module_xxx:api`：路由、跨模块接口和必要稳定模型；不得依赖任意 impl。
-- `module_xxx:impl`：业务实现；只依赖自身 api、其他 feature api 和所需 core。
-- feature 之间不得依赖对方 impl。唯一例外是 `mine` standalone 组装 OTA impl，且只存在于构建组装分支。
-- 跨模块跳转使用 `RouterManager` 和目标 feature api 的 `XxxRoutes`，不得直接引用对方 Activity/Fragment。
+- `module_xxx`：单一业务模块，持有该领域的 UI、数据、资源与独立运行入口；默认只依赖所需 `core:*`。
+- feature 之间不得建立常规项目依赖。唯一例外是 `mine` standalone 组装 OTA，且只存在于构建组装分支。
+- 跨模块跳转使用 `RouterManager` 和 `core:navigation` 的 `RouterPath`，不得直接引用对方 Activity/Fragment。
 
-新增模块必须同时提供 api/impl README、路由契约测试、索引更新和必要的 standalone 验证；详细流程见 `FRAMEWORK_GUIDE.md`。
+新增模块必须提供一个标准 README、路由契约测试、索引更新和必要的 standalone 验证；禁止默认创建 api/impl 子模块。详细流程见 `FRAMEWORK_GUIDE.md`。
 
 ## 编码、UI 与资源
 
 - Kotlin/Java 文件与主要类型同名，一个文件只承担一个主要职责。
 - 页面配套类型使用同一领域前缀，如 `LoginActivity`、`LoginViewModel`、`LoginRepository`、`LoginUiState`。
-- DTO、持久化 Entity、领域模型和 UiModel 不混用；跨模块模型只放 feature api 或稳定的 `core:model`。
+- DTO、持久化 Entity、领域模型和 UiModel 不混用；跨模块稳定模型放 `core:model`，业务内部模型留在所属 feature。
 - 维护 XML 页面时沿用 XML + ViewBinding；新页面或明确迁移可按模块设计选择 XML 或 Compose，项目不禁止 Compose。
 - Activity/Fragment 优先复用现有 Base 类；状态由 ViewModel 持有，UI 不直接组织网络与持久化流程。
 - 资源使用所有者前缀：`app_*`、`common_*`、`web_*`、`login_*`、`home_*`、`mine_*`、`ota_*`。
