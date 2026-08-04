@@ -74,6 +74,15 @@ internal object ProjectGovernanceCollector {
     private val javaPublicTypeRegex = Regex(
         "^public\\s+(?:(?:final|abstract|sealed|non-sealed)\\s+)*(?:class|interface|enum|record|@interface)\\s+([A-Za-z_][A-Za-z0-9_]*)"
     )
+    private val kotlinDeclaredTypeRegex = Regex(
+        "^(?:@[A-Za-z_][A-Za-z0-9_.]*(?:\\([^)]*\\))?\\s+)*(?:(?:public|internal|private|protected|open|abstract|sealed|data|enum|annotation|value|fun|actual|expect|final|inner)\\s+)*(?:class|interface|object)\\s+([A-Za-z_][A-Za-z0-9_]*)"
+    )
+    private val javaDeclaredTypeRegex = Regex(
+        "^(?:@[A-Za-z_][A-Za-z0-9_.]*(?:\\([^)]*\\))?\\s+)*(?:(?:public|protected|private|abstract|final|static|sealed|non-sealed|strictfp)\\s+)*(?:class|interface|enum|record|@interface)\\s+([A-Za-z_][A-Za-z0-9_]*)"
+    )
+    private val classDescriptionRegex = Regex("(?m)^\\s*\\*\\s*@description:\\s*\\S.*$")
+    private val classAuthorRegex = Regex("(?m)^\\s*\\*\\s*@author:\\s*\\S.*$")
+    private val classDateRegex = Regex("(?m)^\\s*\\*\\s*@Date:\\s*\\d{4}-\\d{2}-\\d{2}\\s*$")
     private val headingRegex = Regex("^##\\s+(.+?)\\s*$", setOf(RegexOption.MULTILINE))
     private val valueResourceRegex = Regex(
         "<(string|color|dimen|style|attr|declare-styleable|bool|integer|string-array|array|plurals)\\s+[^>]*name=\"([^\"]+)\""
@@ -119,6 +128,14 @@ internal object ProjectGovernanceCollector {
                 headings = headingRegex.findAll(file.readText()).map { it.groupValues[1].trim() }.toSet(),
             )
         }.filterValues { it != null }.mapValues { it.value!! }
+        val classHeaderBaseline = rootProject.rootDir
+            .resolve("config/architecture/class-header-baseline.txt")
+            .takeIf(File::isFile)
+            ?.readLines()
+            ?.map(String::trim)
+            ?.filter { it.isNotEmpty() && !it.startsWith("//") }
+            ?.toSet()
+            .orEmpty()
 
         val sourceMarkers = (androidModules.map { it.projectDir } + rootProject.rootDir.resolve("build-logic"))
             .flatMap { moduleDir ->
@@ -129,6 +146,10 @@ internal object ProjectGovernanceCollector {
                         val isTestSource = "/src/test/" in "/$path" || "/src/androidTest/" in "/$path"
                         if (isTestSource && source.readText().contains("addition_isCorrect")) {
                             add("$path#addition_isCorrect")
+                        }
+                        collectMissingClassHeaders(source).forEach { typeName ->
+                            val marker = "$path#classHeader:$typeName"
+                            if (marker !in classHeaderBaseline) add(marker)
                         }
                     }
                 }
@@ -309,6 +330,56 @@ internal object ProjectGovernanceCollector {
             }
         }.distinct()
     }
+
+    private fun collectMissingClassHeaders(source: File): List<String> {
+        var braceDepth = 0
+        var classHeader: String? = null
+        var classHeaderBuffer: StringBuilder? = null
+        return buildList {
+            source.forEachLine { rawLine ->
+                val line = rawLine.trim()
+                val buffer = classHeaderBuffer
+                if (buffer != null) {
+                    buffer.appendLine(rawLine)
+                    if (line == "*/") {
+                        classHeader = buffer.toString()
+                        classHeaderBuffer = null
+                    }
+                    return@forEachLine
+                }
+
+                if (braceDepth == 0 && line.startsWith("/**")) {
+                    if ("*/" in line) {
+                        classHeader = rawLine
+                    } else {
+                        classHeaderBuffer = StringBuilder().appendLine(rawLine)
+                    }
+                    return@forEachLine
+                }
+
+                if (braceDepth == 0 && line.isNotEmpty()) {
+                    val typeName = when (source.extension) {
+                        "kt" -> kotlinDeclaredTypeRegex.find(line)?.groupValues?.get(1)
+                        "java" -> javaDeclaredTypeRegex.find(line)?.groupValues?.get(1)
+                        else -> null
+                    }
+                    if (typeName != null) {
+                        if (!hasRequiredClassHeader(classHeader)) add(typeName)
+                        classHeader = null
+                    } else if (!line.startsWith("@")) {
+                        classHeader = null
+                    }
+                }
+                braceDepth += line.count { it == '{' } - line.count { it == '}' }
+            }
+        }.distinct()
+    }
+
+    private fun hasRequiredClassHeader(header: String?): Boolean =
+        header != null &&
+            classDescriptionRegex.containsMatchIn(header) &&
+            classAuthorRegex.containsMatchIn(header) &&
+            classDateRegex.containsMatchIn(header)
 
     private fun File.walkSourceFiles(): List<File> {
         if (!isDirectory) return emptyList()

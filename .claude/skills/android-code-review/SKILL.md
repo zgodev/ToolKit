@@ -1,84 +1,42 @@
 ---
 name: android-code-review
-description: Performs a structured Android code review. Use when the user asks to review code, check a PR, look for bugs or leaks, audit for memory/lifecycle/threading issues, or evaluate whether code follows project conventions.
+description: Use when reviewing Android code, pull requests, memory or lifecycle risks, threading and coroutine behavior, architecture boundaries, UI correctness, performance, or project convention compliance.
 ---
 
-# Android 代码审查清单
+# Android 代码审查
 
-按以下顺序检查，找到问题时给出具体行号 + 修改建议。
+按严重度输出带文件与行号的可执行问题；先验证真实调用链，不根据命名猜测。
 
-## 1. 生命周期与内存泄漏
+## 检查顺序
 
-- [ ] Composable 中的 `LaunchedEffect` / `DisposableEffect` 有合适的 key
-- [ ] 观察 Flow 用 `collectAsStateWithLifecycle()`，不是裸 `collectAsState()`
-- [ ] ViewModel 中的协程跑在 `viewModelScope`，不是 `GlobalScope`
-- [ ] 没有把 Activity/Fragment/View 的引用传给长生命周期对象
-- [ ] BroadcastReceiver、Listener、Callback 在 `onDestroy`/`onDispose` 里注销
-- [ ] Service / WorkManager 任务能正确取消
+1. 生命周期与泄漏：作用域、监听注销、Context/View 引用、WorkManager 取消。
+2. 线程与协程：主线程阻塞、结构化并发、Flow 收集生命周期、共享状态竞争。
+3. 空安全与异常：`!!` 不变量、异常吞噬、用户可见反馈、网络错误映射。
+4. UI：XML/Compose 生命周期、状态提升、重组、无障碍、主题与资源前缀。
+5. 架构：以根目录 `AGENTS.md` 和目标模块 README 为准检查真实依赖与路由；不得套用通用 api/impl、UseCase 或分层模板。
+6. 数据边界：DTO 不泄漏到 UI，Repository 使用 suspend/Flow，ViewModel 不持有 View。
+7. 规范：新建类型、资源、公共入口和模块文档符合当前项目治理规则，生成索引保持最新。
+8. 测试：新行为有回归覆盖，异步状态断言稳定，测试不是模板占位。
+9. 性能与产物：循环分配、图片尺寸、依赖体积、Release R8、启动关键路径。
 
-## 2. 线程与协程
+## Compose 附加项
 
-- [ ] 网络/数据库调用不在 `Dispatchers.Main`
-- [ ] Repository 内部切 `Dispatchers.IO`，调用方不用管
-- [ ] `runBlocking` 只出现在测试或 main 方法中
-- [ ] `Flow.collect` 不在主线程做重计算
-- [ ] 共享可变状态用 `Mutex` 或 `StateFlow`，不用 `@Volatile` + `synchronized`
-
-## 3. 空安全与异常
-
-- [ ] 没有滥用 `!!`（每一个 `!!` 都要能解释为什么不会为 null）
-- [ ] 网络层抛出的异常在 Repository 转换成 `Result.failure` 或领域异常
-- [ ] UI 层捕获异常后有用户可见的反馈（Snackbar/空态/重试）
-- [ ] 没有裸 `catch (e: Exception)` 后默默吞掉
-
-## 4. Compose 特定问题
-
-- [ ] 不稳定参数（`List`、lambda）导致的不必要重组
-- [ ] `LazyColumn` / `LazyRow` 的 items 带 `key`
-- [ ] Composable 里没有直接创建 `ViewModel`、`Repository`
-- [ ] `remember` 的 key 正确（依赖变化时会重新计算）
-- [ ] 没有在 Composable 里调用副作用函数（日志、网络）
-
-## 5. 架构合规
-
-- [ ] domain 层无 Android 依赖
-- [ ] DTO/Entity 没泄漏到 UI
-- [ ] ViewModel 不持有 Context / View
-- [ ] 业务逻辑在 UseCase，不在 ViewModel 或 Composable
-- [ ] Repository 返回 Flow / suspend，不返回回调
-
-## 6. 资源与国际化
-
-- [ ] 字符串全部在 `strings.xml`，不硬编码
-- [ ] 尺寸用 `dimens.xml` 或设计 token，不散落 `.dp`
-- [ ] 颜色走主题，不直接用 hex
-- [ ] 图片优先矢量（VectorDrawable）或 WebP
-
-## 7. 测试覆盖
-
-- [ ] 新 UseCase 有单元测试
-- [ ] ViewModel 测试使用 `Turbine` 验证状态流
-- [ ] Mapper 有往返测试（DTO → Domain → DTO）
-- [ ] 关键用户流程有 Compose UI 测试
-
-## 8. 性能 & APK 大小
-
-- [ ] 没有在循环中创建对象（尤其是 `onDraw`、`measure`）
-- [ ] 图片加载用 Coil 并指定 `size`，不让它加载原始分辨率
-- [ ] 新增依赖不引入 >500KB 增量（用 APK Analyzer 验证）
-- [ ] Release 构建启用 R8（`isMinifyEnabled = true`）
+- 使用 `collectAsStateWithLifecycle()`；Effect 和 `remember` 的 key 与依赖一致。
+- Lazy 列表提供稳定 key；Composable 内不直接发网络请求或创建 Repository。
+- 参数稳定性和 lambda 不造成无意义重组。
 
 ## 输出格式
 
-按下面结构给出审查结果：
+### 必须修复
 
-### 🔴 必须修复
-（会导致 crash / 泄漏 / 数据错误的问题）
+会导致 crash、泄漏、数据错误、安全问题或组件边界失效。
 
-### 🟡 建议修改
-（不符合项目规范，但不会立即出问题）
+### 建议修改
 
-### 🟢 可以优化
-（风格、可读性、小优化）
+明确的可维护性、测试、性能或项目规范问题。
 
-每条问题给出：**文件:行号** + **问题描述** + **建议的修改代码**。
+### 可以优化
+
+不改变正确性的可读性与小幅优化。
+
+每条包含：`文件:行号`、证据、影响、最小修改建议。没有发现问题时明确说明已检查范围和残余风险。

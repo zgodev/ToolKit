@@ -1,6 +1,6 @@
 # ToolKit 组件化开发指南
 
-本文是完整开发参考；强制规则以 `AGENTS.md` 为准，快速定位以生成的 `docs/PROJECT_INDEX.md` 为准，具体模块边界以模块自己的 `README.md` 为准。
+本文是完整开发参考；规则冲突时严格遵循 `AGENTS.md` 定义的优先级，快速定位以生成的 `docs/PROJECT_INDEX.md` 为准，具体模块边界以模块自己的 `README.md` 为准。
 
 ## 1. 架构目标与依赖方向
 
@@ -26,6 +26,8 @@ feature -X-► other feature
 2. 阅读目标模块 README，确认职责、依赖和公共入口。
 3. 打开索引命中的实现和相邻测试，确认真实行为与项目风格。
 4. 索引无结果时先查当前模块，再查职责匹配的 core；只有仍无结果才扩大到仓库搜索。
+
+根目录文档、AI 规则、`build-logic`、依赖治理、CI 或全局配置任务没有目标业务模块时，不读取无关模块 README，改为读取对应根目录文档或 `build-logic/README.md`；实际触达模块后再补读该模块 README。
 
 索引是定位表，不替代源码。命中同名文件后仍要检查调用方、构建变体、Manifest 和生成代码，不能根据名字猜行为。
 
@@ -57,6 +59,7 @@ feature -X-► other feature
 
 - package 以模块 namespace 为根，按职责使用 `ui`/页面域、`viewmodel`、`repository`、`api`、`model`、`di` 等已有分层。
 - 文件与主要类型同名；一个文件只放一个主要职责，紧密且私有的小类型可同文件定义。
+- 新建 Kotlin/Java 顶层类型和具有独立职责的嵌套类型必须使用 `AGENTS.md` 规定的类级注释；`@author` 读取 `git config user.name`，`@Date` 按北京时间（UTC+8）填写首次创建日期。匿名对象、局部类和 `companion object` 豁免。
 - 页面相关类型保持领域前缀一致：`OrderDetailActivity`、`OrderDetailViewModel`、`OrderRepository`、`OrderUiState`。
 - 不新增裸 `Utils`、`Common`、`Helper`、`Manager` 或 `Base`。按能力命名，例如 `DateFormatter`、`KeyboardController`、`OtaDownloadCoordinator`。
 - 布尔值使用 `is`、`has`、`can` 前缀；函数名表达动作和结果，不用 `handleData`、`doWork` 等模糊名称。
@@ -78,9 +81,10 @@ feature -X-► other feature
 
 ## 7. UI、状态与交互
 
-- 维护现有 XML 页面时继续使用 XML + ViewBinding，不在普通需求中顺手迁移技术栈。
-- 新页面或明确迁移可以使用 Compose；同一页面保持一种主渲染体系，不做无意义混搭。
-- XML 页面复用 `BaseActivity<VB>`、`BaseFragment<VB>` 和现有扩展；Compose 遵循 state hoisting 和项目 Material 主题。
+- 新增业务页面和可复用 UI 组件默认使用 Compose，遵循 state hoisting，复用项目 Material 主题、design token 与已有 Composable。
+- 除非属于以下情况，不得新建 XML 布局：维护稳定的既有 XML 页面且迁移会明显扩大任务范围；必须接入缺少可靠 Compose 适配的第三方或系统 View；已验证 Compose 存在当前无法消除的兼容性、性能或无障碍阻塞。使用例外时必须在实现说明中记录具体原因，开发习惯和暂时不熟悉 Compose 不构成例外。
+- 对既有 XML 页面的局部维护继续使用 XML + ViewBinding，并复用 `BaseActivity<VB>`、`BaseFragment<VB>` 和现有扩展；较大重构应优先评估迁移 Compose，但不得在无关需求中整体重写稳定页面。
+- 确需混用时，将 `AndroidView` 或 `ComposeView` 限制在适配边界内；同一页面保持一种主渲染体系和一个状态源，不长期维护两套平行实现。
 - View 只渲染状态和发送意图，不直接发网络请求、访问存储或持有跨页面全局状态。
 - 简单页面使用 MVVM；存在并发加载、重试和复杂事件时复用 `MviViewModel`/`MviContract`，不要为静态页面强行引入 MVI。
 - 一次性事件与持久 UI 状态分离；旋转或重建后应恢复状态且不重复导航、Toast 或请求。
@@ -91,11 +95,21 @@ feature -X-► other feature
 业务 API、DTO 和 Repository 放所属 feature；客户端、拦截器和通用响应规则放 `core:network`。`core:network` 现存的 `CommonApi` 与 Banner/Feed DTO 是待迁移演示兼容项，不得继续向其中添加新业务接口：
 
 ```kotlin
+/**
+ * @description: 定义订单领域的服务端接口
+ * @author: zhangyt
+ * @Date: 2026-08-04
+ */
 interface OrderApi {
     @GET("orders/{id}")
     suspend fun getOrder(@Path("id") id: String): BaseResponse<OrderDto>
 }
 
+/**
+ * @description: 负责订单数据访问和通用网络错误映射
+ * @author: zhangyt
+ * @Date: 2026-08-04
+ */
 class OrderRepository @Inject constructor(
     private val api: OrderApi,
 ) : BaseRepository() {
@@ -160,7 +174,7 @@ class OrderRepository @Inject constructor(
 ./gradlew verifyProjectIndex --offline
 ```
 
-索引必须由任务生成并提交，不手工修补。模块职责改变时先更新模块 README，再重新生成索引。项目级规则改变时同步 `AGENTS.md` 与本文，避免多份冲突规范。
+索引必须由任务生成并提交，不手工修补。模块职责改变时先更新模块 README，再重新生成索引。项目级规则改变时同步 `AGENTS.md` 与本文，避免多份冲突规范。`config/architecture/class-header-baseline.txt` 只记录规则启用前的历史类型，新增类型不得通过扩充基线绕过类注释检查。
 
 ## 14. 完成与代码审查清单
 
@@ -174,7 +188,7 @@ class OrderRepository @Inject constructor(
 - 测试是否验证行为而非实现细节，编译验证与真机验收边界是否说明。
 - 暂存区是否只含当前任务，是否保留用户无关改动。
 
-完整治理基线：
+验证级别由改动触达的最高风险决定：纯文档与规则为 L0，单模块内部实现为 L1，app、公共 core 或多模块协作为 L2，build-logic 与架构治理为 L3；无法确定时提升一级。L0 不强制 Android 构建，L1 执行目标模块 README 中的测试与 assemble，L2 增加全项目单测、app assemble 和受影响 standalone，L3 执行以下完整治理基线：
 
 ```bash
 ./gradlew -p build-logic build --offline

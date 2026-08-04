@@ -172,6 +172,21 @@ object ArchitectureRules {
                     )
                 )
             }
+
+        snapshot.sourceFilePaths
+            .distinct()
+            .sorted()
+            .filter { "#classHeader:" in it }
+            .forEach { marker ->
+                val typeName = marker.substringAfter("#classHeader:")
+                add(
+                    ArchitectureViolation(
+                        ruleId = "ARCH_CLASS_HEADER",
+                        location = marker,
+                        message = "新建类型 `$typeName` 缺少完整类级注释。请填写 @description、@author 和 yyyy-MM-dd 格式的 @Date。",
+                    )
+                )
+            }
     }
 
     private fun expectedResourcePrefix(owner: String): String? = when {

@@ -13,10 +13,11 @@ description: Use when reviewing Android code, pull requests, memory or lifecycle
 2. 线程与协程：主线程阻塞、结构化并发、Flow 收集生命周期、共享状态竞争。
 3. 空安全与异常：`!!` 不变量、异常吞噬、用户可见反馈、网络错误映射。
 4. UI：XML/Compose 生命周期、状态提升、重组、无障碍、主题与资源前缀。
-5. 架构：core 不依赖 feature；feature 仅通过 api 协作；app 才聚合 impl。
+5. 架构：以根目录 `AGENTS.md` 和目标模块 README 为准检查真实依赖与路由；不得套用通用 api/impl、UseCase 或分层模板。
 6. 数据边界：DTO 不泄漏到 UI，Repository 使用 suspend/Flow，ViewModel 不持有 View。
-7. 测试：新行为有回归覆盖，异步状态断言稳定，测试不是模板占位。
-8. 性能与产物：循环分配、图片尺寸、依赖体积、Release R8、启动关键路径。
+7. 规范：新建类型、资源、公共入口和模块文档符合当前项目治理规则，生成索引保持最新。
+8. 测试：新行为有回归覆盖，异步状态断言稳定，测试不是模板占位。
+9. 性能与产物：循环分配、图片尺寸、依赖体积、Release R8、启动关键路径。
 
 ## Compose 附加项
 

@@ -165,6 +165,19 @@ class ArchitectureRulesTest {
         )
     }
 
+    @Test
+    fun `source types without required class header are rejected`() {
+        val violations = ArchitectureRules.validate(
+            snapshot(
+                sourceFilePaths = listOf(
+                    "module_order/src/main/java/com/zhangyt/order/OrderRepository.kt#classHeader:OrderRepository",
+                ),
+            )
+        )
+
+        assertEquals(listOf("ARCH_CLASS_HEADER"), violations.map { it.ruleId })
+    }
+
     private fun snapshot(
         modulePaths: List<String> = emptyList(),
         dependencies: List<ProjectDependencyEdge> = emptyList(),
